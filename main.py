@@ -11,7 +11,7 @@ def main():
 
     # Data_Integration
     matcher = PO_Match()
-    matching_res = matcher.match_formula(PO_res)
+    matching_res = matcher.match_final(PO_res)
 
     # Integration_Add
     integreator = Integreate_All.Integrate_All()

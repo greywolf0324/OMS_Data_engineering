@@ -17,9 +17,7 @@ class PO_Match:
         # parse_res: OCR parsed result for PO
         f = open("field_names.json")
         self.field_names = json.load(f)
-        
-        self.parse_res = parse_res
-        
+                
         self.variables = {}
         self.data = []
         
@@ -34,27 +32,77 @@ class PO_Match:
             "Unit of Measure": "UOM",
         }
         
-        for i, _ in enumerate(self.parse_res):
-            pdf = self.parse_res[f"PDF{i}"]
-            for j, _ in enumerate(pdf):
-                page = pdf[f"page{j}"]
-                length = len(page)
-                data = page[1 : length - 1]
+        self.initial_part = {
+            "PO Line #": "",
+            "Vendor Style": "",
+            "UPC/EAN": "",
+            "Product/Item Description": "",
+            "Dept #": "",
+            "Unit Price": "",
+            "Qty Ordered": "",
+            "Unit of Measure": "",
+        }
+        
+        
     
     def variable_init(self):
         self.variables = {}
-        for field in self.field_names:
-            self.variables[field] = ""
+        for key in self.field_names:
+            self.variables[key] = ""
+            
+    def initial_part_init(self):
+        for key in self.initial_part:
+            self.initial_part[key] = ""
+    
+    def match_plain(self, input):
+        res = []
+            
+        for i, _ in enumerate(input):
+            pdf = input[f"PDF{i}"]
+            
+            for j, _ in enumerate(pdf):
+                page = pdf[f"page{j}"]
+                length = len(page)
+                
+                for item in page[1 : length - 1]:
+                    res.append(item)
+        
+        for i in len(res):
+            res[i] = {
+                "LINE": res[i][0],
+                "VENDOR PN": res[i][2],
+                "UPC/GTIN": res[i][3],
+                "DESCRIPTIONLINE ITEM COMMENTS": res[i][4],
+                "UNIT COST/RETAIL PRICE": res[i][6],
+                "QTY": res[i][7],
+                "UOM": res[i][8],
+                "ITEMTOTAL": res[i][9]
+            }
+        return res
     
     def match_same(self, input):
-        self.variable_init()
+        self.initial_part_init()
         
-        for key in self.pair:
-            self.variables[key] = input[self.pair[key]]
+        for key in self.initial_part:
+            if key == "Product/Item Description":
+                self.initial_part[key] = "fun"
+            
+            if key == "Dept #":
+                self.initial_part[key] = "fun"
+                
+            else: self.initial_part[key] = input[self.pair[key]]
         
-        return self.variables
+        return self.initial_part
     
     def match_formula(self, input):
         #return all {"field": field_value}
         
-        return [{}]
+        return input
+    
+    def match_final(self, PO_res):
+        # return final result
+        input = self.match_plain(PO_res)
+        
+        for item in input:
+            item = self.match_same(item)
+            
