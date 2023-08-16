@@ -1,6 +1,6 @@
 import pdfplumber
 
-class PDF_parsing():
+class PDF_parsing:
     def __init__(self) -> None:
         pass
     
