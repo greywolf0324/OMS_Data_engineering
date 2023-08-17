@@ -13,7 +13,7 @@ class Integreate_All:
     
     #Define several Integrate_funs that is needed for SalesImport
     def fun_Price_Amount(self, m_qty_ordered, m_unit_price):
-        return m_qty_ordered * m_unit_price
+        return float(m_qty_ordered) * float(m_unit_price)
     
     def fun_total(self, quantity, price_amount):
         return quantity * price_amount
@@ -21,68 +21,16 @@ class Integreate_All:
     def fun_invoicenumber(self, m_po_number):
         return m_po_number
     
-    def Integrate_All(self, matching_res):
-        SalesImport = self.Integrate_funs(matching_res)
+    def Integrate_final(self, matching_res):
+        SalesImport = []
+        print(len(matching_res))
+        for i in range(len(matching_res)):
+            SalesImport.append({})
+        
+        for i, element in enumerate(matching_res):
+            #everything will be done here
+            SalesImport[i].update({"Price/Amount*": self.fun_Price_Amount(element["Qty Ordered"], element["Unit Price"])})
+            
+        
         
         return SalesImport
-    
-
-    "RecordType*",
-    "CustomerName*",
-    "InvoiceNumber*",
-    "Reference/Comment/Note",
-    "Product*",
-    "Quantity*",
-    "Price/Amount*" = "Qty Ordered" * ""
-    "Discount",
-    "Tax",
-    "Total*",
-    "Account",
-    "TaxRule*",
-    "DropShip",
-    "CurrencyConversionRate",
-    "DatePaid*",
-    "CustomerContact",
-    "CustomerPhone",
-    "CustomerEmail",
-    "SalesRepresentative*",
-    "ShipmentRequiredByDate",
-    "YourBaseCurrency*",
-    "CustomerCurrency*",
-    "Terms",
-    "PriceTier",
-    "StockLocation",
-    "MemoOnInvoice",
-    "InvoiceDate*/ExpireDate",
-    "InvoiceDueDate",
-    "TaxInclusive*",
-    "ShippingAddressLine1*",
-    "ShippingAddressLine2",
-    "ShipToOther*",
-    "ShippingCity*",
-    "ShippingProvince*",
-    "ShippingPostcode*",
-    "ShippingCountry*",
-    "ShipToCompany*",
-    "BillingAddressLine1*",
-    "BillingAddressLine2",
-    "BillingCity*",
-    "BillingProvince*",
-    "BillingPostcode*",
-    "BillingCountry*",
-    "CreditNoteNumber",
-    "CreditNoteDate",
-    "CustomField1",
-    "CustomField2",
-    "CustomField3",
-    "CustomField4",
-    "CustomField5",
-    "CustomField6",
-    "CustomField7",
-    "CustomField8",
-    "CustomField9",
-    "CustomField10",
-    "CarrierCode",
-    "CarrierServiceCode",
-    "ShipToContact",
-    "ShippingNotes"
