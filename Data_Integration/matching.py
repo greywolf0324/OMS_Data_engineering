@@ -96,15 +96,19 @@ class PO_Match:
             for j, _ in enumerate(pdf):
                 flag = 0
                 page = pdf[f"page{j}"]
-                length = len(page)
-                
-                for item in page[1 : length - 1]:
+                length = len(page[0])
+                print(length)
+                for item in page[0][1 : length - 1]:
                     if flag == 0:
-                        res.append(item.append(page[length][9]))
+                        flag = flag + 1
+                        item.append(page[0][length - 1][9])
+                        res.append(item)
                     
-                    flag = flag + 1
-                    res.append(item.append(""))
-                        
+                    else:
+                        flag = flag + 1
+                        item.append("")
+                        res.append(item)
+
         for i in range(len(res)):
             res[i] = {
                 "LINE": res[i][0],
@@ -176,7 +180,7 @@ class PO_Match:
     def match_final(self, PO_res):
         # return final result
         output = self.match_plain(PO_res)
-        
+        print(len(output))
         for i, item in enumerate(output):
             item = self.match_same(item)
             item = self.match_formula(item)

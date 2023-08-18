@@ -3,10 +3,11 @@ from Data_Integration.matching import PO_Match
 from Integration_Add.Integrator import Integreate_All
 from csv import DictWriter
 import json
+import pandas as pd
+import csv
 
 def main():
-    paths = ["E:\work\Daily\8_10\_N\dataflow\input(PO)\PDF\sample.pdf"]
-
+    paths = ["E:\work\Daily\8_10\_N\dataflow\input(PO)\PDF\multi.pdf"]
     # OCR
     print("On PDF parsing...")
     parser = PDF_parsing()
@@ -25,7 +26,7 @@ def main():
     print("Just a second, writing...")
     f = open("SalesImport_fieldnames.json")
     field_names = json.load(f)
-    
+
     with open('Exam/output/output.csv', 'w') as outfile:
         writer = DictWriter(outfile, field_names)
         writer.writeheader()
