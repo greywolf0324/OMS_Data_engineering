@@ -29,6 +29,18 @@ class PO_Match:
             'Unit Price': "UNIT COST/RETAIL PRICE",
             'Qty Ordered': "QTY",
             "Unit of Measure": "UOM",
+            "PO Date": "PO Date:",
+            "Requested Delivery Date": "Requested Delivery Date:",
+            "Ship Dates": "Requested Ship Date:",
+            "Cancel Date": "Cancel Date:",
+            "Vendor #": "Vendor #:",
+            "Frt Terms": "Freight Terms:",
+            "Payment Terms Disc Due Date": "Disc. Due Date:",
+            "Payment Terms Disc Days Due": "Disc. Days:",
+            "Payment Terms Net Due Date": "Net Due Date:",
+            "Payment Terms Net Days": "Net Days:",
+            "Buyers Catalog or Stock Keeping #": "SKU",
+            "PO Total Amount": "ITEMTOTAL"
         }
         
         self.initial_part = {
@@ -40,6 +52,18 @@ class PO_Match:
             'Unit Price': "",
             'Qty Ordered': "",
             "Unit of Measure": "",
+            "PO Date": "",
+            "Requested Delivery Date": "",
+            "Ship Dates": "",
+            "Cancel Date": "",
+            "Vendor #": "",
+            "Frt Terms": "",
+            "Payment Terms Disc Due Date": "",
+            "Payment Terms Disc Days Due": "",
+            "Payment Terms Net Due Date": "",
+            "Payment Terms Net Days": "",
+            "Buyers Catalog or Stock Keeping #": "",
+            "PO Total Amount": "",
         }
         
         f = open("field_names.json")
@@ -70,22 +94,38 @@ class PO_Match:
             pdf = input[f"PDF{i}"]
             
             for j, _ in enumerate(pdf):
+                flag = 0
                 page = pdf[f"page{j}"]
                 length = len(page)
                 
                 for item in page[1 : length - 1]:
-                    res.append(item)
-        
+                    if flag == 0:
+                        res.append(item.append(page[length][9]))
+                    
+                    flag = flag + 1
+                    res.append(item.append(""))
+                        
         for i in range(len(res)):
             res[i] = {
                 "LINE": res[i][0],
+                "SKU": res[i][1],
                 "VENDOR PN": res[i][2],
                 "UPC/GTIN": res[i][3],
                 "DESCRIPTIONLINE ITEM COMMENTS": res[i][4],
                 "UNIT COST/RETAIL PRICE": res[i][6],
                 "QTY": res[i][7],
                 "UOM": res[i][8],
-                "ITEMTOTAL": res[i][9]
+                "PO Date:": res[i][10],
+                "Requested Delivery Date:": res[i][11],
+                "Requested Ship Date:": res[i][12],
+                "Cancel Date:": res[i][13],
+                "Vendor #:": res[i][16],
+                "Freight Terms:": res[i][18],
+                "Disc. Due Date:": res[i][23],
+                "Disc. Days:": res[i][24],
+                "Net Due Date:": res[i][25],
+                "Net Days:": res[i][26],
+                "ITEMTOTAL": res[i][-1]
             }
         return res
     

@@ -5,7 +5,7 @@ from csv import DictWriter
 import json
 
 def main():
-    paths = ["E:\work\Daily\8_10\_N\dataflow\input(PO)\PDF\multi.pdf", "E:\work\Daily\8_10\_N\dataflow\input(PO)\PDF\sample.pdf"]
+    paths = ["E:\work\Daily\8_10\_N\dataflow\input(PO)\PDF\sample.pdf"]
 
     # OCR
     print("On PDF parsing...")
@@ -26,7 +26,7 @@ def main():
     f = open("SalesImport_fieldnames.json")
     field_names = json.load(f)
     
-    with open('Exam/output/output.csv','w') as outfile:
+    with open('Exam/output/output.csv', 'w') as outfile:
         writer = DictWriter(outfile, field_names)
         writer.writeheader()
         writer.writerows(sales_import)
