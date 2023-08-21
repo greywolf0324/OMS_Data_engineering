@@ -34,7 +34,6 @@ class PDF_parsing:
                                 continue
                             else:
                                 cols_add.append(self.re_fun(item))
-                print(cols_add)
                 table_main = page.extract_tables()[2]
                 
                 for i, item in enumerate(table_main):
@@ -43,8 +42,6 @@ class PDF_parsing:
                         if i == 0: item.append(list(dic.keys())[0])
                         elif i == 1: item.append(list(dic.values())[0].replace("\n", ""))
                         else: item.append("")
-                    print(item)
-                print(type(table_main))
                 res[f"PDF{k}"][f"page{page_num}"].append(table_main)
         
         return res
