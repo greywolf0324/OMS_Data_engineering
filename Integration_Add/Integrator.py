@@ -5,7 +5,7 @@ import pandas as pd
 class Integreate_All:
     def __init__(self) -> None:
         # Initialize productLib and UOM
-        UOM = pd.read_csv("UOM.csv")
+        UOM = pd.read_csv("config/UOM.csv")
         
         
         product_lib = ""
@@ -25,7 +25,7 @@ class Integreate_All:
             "CustomerEmail": "Email",    
         }
         
-        customer_match = pd.read_csv("customer_fields.csv")
+        customer_match = pd.read_csv("config/customer_fields.csv")
         
         values = list(customer_match[name])
         auto_dic = {}

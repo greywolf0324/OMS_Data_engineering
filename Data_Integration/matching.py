@@ -66,7 +66,7 @@ class PO_Match:
             "PO Total Amount": "",
         }
         
-        f = open("field_names.json")
+        f = open("config/field_names_SalesImport_original.json")
         self.field_names = json.load(f)
         self.field_names_temp = []
         for item in self.field_names:

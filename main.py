@@ -30,7 +30,7 @@ def main():
     # OMS = generator.generator_all(sales_import)
     
     print("Just a second, writing...")
-    f = open("SalesImport_fieldnames.json")
+    f = open("config/fieldnames_SalesImport.json")
     field_names = json.load(f)
 
     with open('Exam/output/output.csv', 'w') as outfile:
