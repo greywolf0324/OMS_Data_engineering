@@ -40,7 +40,7 @@ def main():
     # with open("output.json", 'w') as f:
     #     json.dump(sales_import, f)
     print("successful!")
-if __name__ =="__main__":
+if __name__ == "__main__":
     
     main()
     

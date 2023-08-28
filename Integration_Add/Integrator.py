@@ -11,7 +11,7 @@ class Integreate_All:
         product_lib = ""
         pass
     
-    def auto_fun(self, name):
+    def auto_fun(self, customer_name):
         OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
             "TaxRule*": "TaxRule",
@@ -27,7 +27,7 @@ class Integreate_All:
         
         customer_match = pd.read_csv("config/customer_fields.csv")
         
-        values = list(customer_match[name])
+        values = list(customer_match[customer_name])
         auto_dic = {}
         
         for i, field in enumerate(OMS_Customer_Sales_Import):
