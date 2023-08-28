@@ -37,7 +37,7 @@ class PDF_parsing:
                 table_main = page.extract_tables()[2]
                 
                 for i, item in enumerate(table_main):
-                    print("#",i)
+                    # print("#",i)
                     for dic in cols_add:
                         if i == 0: item.append(list(dic.keys())[0])
                         elif i == 1: item.append(list(dic.values())[0].replace("\n", ""))

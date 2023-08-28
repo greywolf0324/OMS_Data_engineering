@@ -1,0 +1,13 @@
+Name,Days,Method,DueNextMonth,PaymentTermActive,PaymentTermDefault
+ T/T against BL Copy,0,1,-1,TRUE,FALSE
+0 Days,0,1,-1,TRUE,FALSE
+120 Days,120,1,-1,TRUE,FALSE
+15 Days,15,1,1,TRUE,FALSE
+25% Deposit - 75% Against BOL,0,1,0,TRUE,FALSE
+30 Days,30,1,0,TRUE,FALSE
+30% Deposit - 70% Against BOL,0,1,0,TRUE,FALSE
+45 Days,45,1,-1,TRUE,FALSE
+60 Days,60,1,-1,TRUE,FALSE
+75 Days,75,1,-1,TRUE,FALSE
+90 Days,90,1,-1,TRUE,FALSE
+Letter of Credit,0,1,-1,TRUE,FALSE

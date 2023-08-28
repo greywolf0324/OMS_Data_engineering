@@ -5,10 +5,10 @@ import pandas as pd
 class Integreate_All:
     def __init__(self) -> None:
         # Initialize productLib and UOM
+        UOM = pd.read_csv("UOM.csv")
         
         
         product_lib = ""
-        UOM = ""
         pass
     
     def auto_fun(self, name):
@@ -60,6 +60,8 @@ class Integreate_All:
         for i, element in enumerate(matching_res):
             #everything will be done here
             # print(element["Qty Ordered"], element["Unit Price"])
+
+            # Create formula fields
             SalesImport[i].update(
                 {
                     "Price/Amount*": self.fun_Price_Amount(element["Qty Ordered"], element["Unit Price"]),
@@ -69,11 +71,14 @@ class Integreate_All:
                     
                 }
             )
+
             SalesImport[i].update(
                 {
                     "CustomerName*": "BUC-EE'S",
                 }
             )
+
+            # Add inherited fields
             SalesImport[i].update(self.auto_fun("BUC-EE'S"))
             
         
