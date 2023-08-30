@@ -87,51 +87,51 @@ class PO_Match:
         for key in self.pair:
             self.initial_part.update({key:""})
     
-    def match_plain(self, input):
-        res = []
+    # def match_plain(self, input):
+        # res = []
             
-        for i, _ in enumerate(input):
-            pdf = input[f"PDF{i}"]
+        # for i, _ in enumerate(input):
+        #     pdf = input[f"PDF{i}"]
             
-            for j, _ in enumerate(pdf):
-                flag = 0
-                page = pdf[f"page{j}"]
-                length = len(page[0])
-                print(length)
-                for item in page[0][1 : length - 1]:
-                    if flag == 0:
-                        flag = flag + 1
-                        item.append(page[0][length - 1][9])
-                        res.append(item)
+        #     for j, _ in enumerate(pdf):
+        #         flag = 0
+        #         page = pdf[f"page{j}"]
+        #         length = len(page[0])
+        #         print(length)
+        #         for item in page[0][1 : length - 1]:
+        #             if flag == 0:
+        #                 flag = flag + 1
+        #                 item.append(page[0][length - 1][9])
+        #                 res.append(item)
                     
-                    else:
-                        flag = flag + 1
-                        item.append("")
-                        res.append(item)
+        #             else:
+        #                 flag = flag + 1
+        #                 item.append("")
+        #                 res.append(item)
 
-        for i in range(len(res)):
-            res[i] = {
-                "LINE": res[i][0],
-                "SKU": res[i][1],
-                "VENDOR PN": res[i][2],
-                "UPC/GTIN": res[i][3],
-                "DESCRIPTIONLINE ITEM COMMENTS": res[i][4],
-                "UNIT COST/RETAIL PRICE": res[i][6],
-                "QTY": res[i][7],
-                "UOM": res[i][8],
-                "PO Date:": res[i][10],
-                "Requested Delivery Date:": res[i][11],
-                "Requested Ship Date:": res[i][12],
-                "Cancel Date:": res[i][13],
-                "Vendor #:": res[i][16],
-                "Freight Terms:": res[i][18],
-                "Disc. Due Date:": res[i][23],
-                "Disc. Days:": res[i][24],
-                "Net Due Date:": res[i][25],
-                "Net Days:": res[i][26],
-                "ITEMTOTAL": res[i][-1]
-            }
-        return res
+        # for i in range(len(input)):
+        #     input[i] = {
+        #         "LINE": input[i][0],
+        #         "SKU": input[i][1],
+        #         "VENDOR PN": input[i][2],
+        #         "UPC/GTIN": input[i][3],
+        #         "DESCRIPTIONLINE ITEM COMMENTS": input[i][4],
+        #         "UNIT COST/RETAIL PRICE": input[i][6],
+        #         "QTY": input[i][7],
+        #         "UOM": input[i][8],
+        #         "PO Date:": input[i][10],
+        #         "Requested Delivery Date:": input[i][11],
+        #         "Requested Ship Date:": input[i][12],
+        #         "Cancel Date:": input[i][13],
+        #         "Vendor #:": input[i][16],
+        #         "Freight Terms:": input[i][18],
+        #         "Disc. Due Date:": input[i][23],
+        #         "Disc. Days:": input[i][24],
+        #         "Net Due Date:": input[i][25],
+        #         "Net Days:": input[i][26],
+        #         "ITEMTOTAL": input[i][-1]
+        #     }
+        # return res
     
     def match_divide(self, input):
         input = list(input)
@@ -179,11 +179,12 @@ class PO_Match:
     
     def match_final(self, PO_res):
         # return final result
-        output = self.match_plain(PO_res)
-        print(len(output))
-        for i, item in enumerate(output):
-            item = self.match_same(item)
-            item = self.match_formula(item)
-            output.pop(i)
-            output.insert(i, item)
+        # output = self.match_plain(PO_res)
+        # print(len(output))
+        for page in PO_res:
+            for i, item in enumerate(page):
+                item = self.match_same(item)
+                item = self.match_formula(item)
+                output.pop(i)
+                output.insert(i, item)
         return output
