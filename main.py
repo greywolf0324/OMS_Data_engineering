@@ -8,7 +8,7 @@ import pandas as pd
 import csv
 
 def main():
-    paths = ["E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\multi.pdf"]
+    paths = ["E:\gem_E\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\multi.pdf", "E:\gem_E\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\sample.pdf"]
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
     parser = PDF_parsing()

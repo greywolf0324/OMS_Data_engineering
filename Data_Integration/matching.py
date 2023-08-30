@@ -87,6 +87,16 @@ class PO_Match:
         for key in self.pair:
             self.initial_part.update({key:""})
     
+    def match_plain(self, input):
+        res = []
+
+        for i, _ in enumerate(input):
+            pdf = input[f"PDF{i}"]
+
+            for j, _ in enumerate(pdf):
+                res.append(pdf[f"page{j}"])
+
+        return res
     # def match_plain(self, input):
         # res = []
             
@@ -179,12 +189,14 @@ class PO_Match:
     
     def match_final(self, PO_res):
         # return final result
-        # output = self.match_plain(PO_res)
-        # print(len(output))
-        for page in PO_res:
-            for i, item in enumerate(page):
-                item = self.match_same(item)
-                item = self.match_formula(item)
-                output.pop(i)
-                output.insert(i, item)
+        output = self.match_plain(PO_res)
+        print(len(output))
+        # for page in PO_res:
+        #     for i, item in enumerate(page):
+        #         item = self.match_same(item)
+        #         item = self.match_formula(item)
+        #         output.pop(i)
+        #         output.insert(i, item)
+        
         return output
+        

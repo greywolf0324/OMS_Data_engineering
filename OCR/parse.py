@@ -119,8 +119,8 @@ class PDF_parsing:
                 # for key in res[f"PDF{k}"][f"page{page_num}"]:
                 #     print(key, "\t", len(res[f"PDF{k}"][f"page{page_num}"][key]))
                 
-                print(res[f"PDF{k}"][f"page{page_num}"])
-                print(1)
+                # print(res[f"PDF{k}"][f"page{page_num}"])
+
         if os.path.isfile("temp.xlsx"):
             os.remove("temp.xlsx")
         book = xlsxwriter.Workbook("temp.xlsx")
@@ -138,9 +138,9 @@ class PDF_parsing:
                     temp = []
 
                     for key in res[dic][di].keys():
-                        print(len(res[dic][di]["LINE"]))
-                        print(res[dic][di])
-                        print(key)
+                        # print(len(res[dic][di]["LINE"]))
+                        # print(res[dic][di])
+                        # print(key)
                         temp.append(res[dic][di][key][i])
                     sheet.append(temp)
 
