@@ -19,7 +19,7 @@ class PO_Match:
         
         self.variables = {}
         self.data = []
-        
+        self.length = 0
         self.pair = {
             'PO Line #': "LINE",
             'Vendor Style': "VENDOR PN",
@@ -144,6 +144,7 @@ class PO_Match:
         # return res
     
     def match_divide(self, input):
+
         input = list(input)
         input.remove("\n")
         input = "".join(input)
@@ -153,50 +154,98 @@ class PO_Match:
         for i, element in enumerate(input_):
             if ":" in element: temp.append(i)
 
-        f_th = input_[0:temp[1]]
-        s_nd = input_[temp[1]:]
-        
-        return [" ".join(f_th), " ".join(s_nd)]
+            # f_th = input_[0:temp[1]]
+            # s_nd = input_[temp[1]:]
+        return [input_[0:temp[1]], input_[temp[1]:]]
     
     def match_same(self, input):
         self.initial_part_init()
         
-        for i, key in enumerate(self.initial_part):
-            if key == "Product/Item Description":
-                self.initial_part[key] = self.match_divide(input[self.pair[key]])[0]
-                self.initial_part[key] = "".join(self.initial_part[key])
+        length = len(input["LINE"])
+        # for i, key in enumerate(self.initial_part):
+        #     if key == "Product/Item Description":
+        #         self.initial_part[key] = self.match_divide(input[self.pair[key]])[0]
+        #         self.initial_part[key] = "".join(self.initial_part[key])
             
-            elif key == "Dept #":
-                self.initial_part[key] = "Department Number" + self.match_divide(input[self.pair[key]])[1]
-                self.initial_part[key] = "".join(self.initial_part[key])
-            elif key == 'Unit Price':
-                self.initial_part[key] = re.findall(r'\d\.\d+', input[self.pair[key]])
-                self.initial_part[key] = "".join(self.initial_part[key])
-            elif key == 'Vendor Style':
-                self.initial_part[key] = re.findall(r'\d', input[self.pair[key]])
-                self.initial_part[key] = "".join(self.initial_part[key])
+        #     elif key == "Dept #":
+        #         self.initial_part[key] = "Department Number" + self.match_divide(input[self.pair[key]])[1]
+        #         self.initial_part[key] = "".join(self.initial_part[key])
+        #     elif key == 'Unit Price':
+        #         self.initial_part[key] = re.findall(r'\d\.\d+', input[self.pair[key]])
+        #         self.initial_part[key] = "".join(self.initial_part[key])
+        #     elif key == 'Vendor Style':
+        #         self.initial_part[key] = re.findall(r'\d', input[self.pair[key]])
+        #         self.initial_part[key] = "".join(self.initial_part[key])
                 
-            else: self.initial_part[key] = input[self.pair[key]]
+        #     else: self.initial_part[key] = input[self.pair[key]]
         
-        return self.initial_part
+        # return self.initial_part
+
+        for key in self.pair:
+            if key == "Product/Item Description":
+                input[key] = []
+                input["Dept #"] = []
+
+                for i in range(1, length):
+                    input[key].append(self.match_divide(input[self.pair[key]][i])[0])
+                    input["Dept #"].append(self.match_divide(input[self.pair[key]][i])[1])
+
+                input[key].insert(0, "")
+                input["Dept #"].insert(0, "")
+                # print(input[key])
+                # print(input["Dept #"])
+                del input[self.pair[key]]
+                
+            elif key == "Dept #": continue
+            
+            elif key == "Unit Price":
+                input[key] = []
+
+                for i in range(1, length):
+                    temp = re.findall(r'\d\.\d+', input[self.pair[key]][i])
+                    input[key].append("".join(temp))
+                
+                input[key].insert(0, "")
+
+                del input[self.pair[key]]
+            
+            elif key == 'Vendor Style':
+                input[key] = []
+                
+                for i in range(1, length):
+                    # print(input[self.pair[key]])
+                    temp = re.findall(r'\d', input[self.pair[key]][i])
+                    input[key].append("".join(temp))
+                
+                input[key].insert(0, "")
+                del input[self.pair[key]]
+
+            else:
+                input[key] = input[self.pair[key]]
+                del input[self.pair[key]]
+        # print(input)
+        return input
     
     def match_formula(self, input):
         #return all {"field": field_value}
+        
         for item in self.field_names:
-            input.update({item: ""})
+            for _ in range(self.length):
+                input.update({item: ""})
             
         return input
     
     def match_final(self, PO_res):
         # return final result
-        output = self.match_plain(PO_res)
-        print(len(output))
-        # for page in PO_res:
-        #     for i, item in enumerate(page):
-        #         item = self.match_same(item)
-        #         item = self.match_formula(item)
-        #         output.pop(i)
-        #         output.insert(i, item)
         
+        output = self.match_plain(PO_res)
+        # print(output[0])
+        for i, page in enumerate(output):
+            self.length = len(page["LINE"])
+            item = self.match_same(page)
+            item = self.match_formula(item)
+            output.pop(i)
+            output.insert(i, item)
+        print(output)
         return output
         
