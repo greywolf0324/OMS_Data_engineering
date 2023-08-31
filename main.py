@@ -6,6 +6,9 @@ from csv import DictWriter
 import json
 import pandas as pd
 import csv
+from openpyxl import load_workbook
+import xlsxwriter
+import os
 
 def main():
     paths = [r"C:\Users\Administrator\Desktop\_N\dataflow/1_input(PO)\PDF\sample.pdf"]
@@ -23,7 +26,7 @@ def main():
     print("Integrating...")
     integreator = Integreate_All()
     sales_import = integreator.Integrate_final(matching_res)
-    
+    print(sales_import)
     # # Generating OMS
     # print("Generating OMS...")
     # generator = OMS_Generator()
@@ -32,13 +35,44 @@ def main():
     print("Just a second, writing...")
     f = open("config/fieldnames_SalesImport.json")
     field_names = json.load(f)
+    print(type(field_names))
+    # with open('Exam/output/output.csv', 'w') as outfile:
+    #     writer = DictWriter(outfile, field_names)
+    #     writer.writeheader()
+    #     writer.writerows(sales_import)
 
-    with open('Exam/output/output.csv', 'w') as outfile:
-        writer = DictWriter(outfile, field_names)
-        writer.writeheader()
-        writer.writerows(sales_import)
+
     # with open("output.json", 'w') as f:
     #     json.dump(sales_import, f)
+    if os.path.isfile("output.xlsx"):
+        os.remove("output.xlsx")
+    book = xlsxwriter.Workbook("output.xlsx")
+    sheet = book.add_worksheet("cont_excel")
+    keys = list(sales_import[0].keys())
+    for idx, header in enumerate(field_names):
+        sheet.write(0, idx, header)
+
+    book.close()
+
+    book = load_workbook("output.xlsx")
+    sheet = book.get_sheet_by_name("cont_excel")
+    
+    for dic in sales_import:
+        for i in range(len(dic[keys[0]])):
+            temp = []
+
+            for key in field_names:
+                # print(len(res[dic][di]["LINE"]))
+                # print(res[dic][di])
+                # print(key)
+                if key in keys:
+                    temp.append(dic[key][i])
+                else:
+                    temp.append("")
+            sheet.append(temp) 
+    
+    book.save(filename = "output.xlsx")
+
     print("successful!")
 if __name__ == "__main__":
     
