@@ -11,7 +11,7 @@ import xlsxwriter
 import os
 
 def main():
-    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\sample.pdf"]
+    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\multi.pdf"]
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
     parser = PDF_parsing()
