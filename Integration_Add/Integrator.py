@@ -8,6 +8,8 @@ class Integreate_All:
         self.additional_uom = pd.read_csv("config/uom_sku.csv")
         self.length = 0
         self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
+        self.paymentterms = pd.read_csv("config/OMS_DB/OMS_PaymentTerm.csv")
+
     def auto_fun(self, customer_name):
         OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
@@ -145,13 +147,14 @@ class Integreate_All:
             )
 
             #customername
+            #Add OMS_CustomerName addition functionality
             SalesImport[i].update(
                 {
                     "CustomerName*": self.fun_iter_all("BUC-EE'S"),
                 }
             )
 
-            # Add inherited fields
+            # Add customername inherited fields
             SalesImport[i].update(self.auto_fun("BUC-EE'S"))
             
             # Add RecordType
@@ -195,11 +198,14 @@ class Integreate_All:
                 #make input box to input Frt Terms
                 pass
             else:
-                SalesImport[i].update(
-                    {
-                        "Terms": element["Frt Terms"]
-                    }
-                )
-
+                if element["Frt Terms"] in list(self.paymentterms["Name"]):
+                    SalesImport[i].update(
+                        {
+                            "Terms": element["Frt Terms"]
+                        }
+                    )
+                else:
+                    #OMS_Paymentterm addition
+                    pass
         
         return SalesImport
