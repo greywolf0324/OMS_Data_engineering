@@ -11,7 +11,7 @@ import xlsxwriter
 import os
 
 def main():
-    paths = [r"C:\Users\Administrator\Desktop\_N\dataflow/1_input(PO)\PDF\sample.pdf"]
+    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\sample.pdf"]
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
     parser = PDF_parsing()
@@ -28,6 +28,7 @@ def main():
     sales_import = integreator.Integrate_final(matching_res)
     print(sales_import)
     # # Generating OMS
+
     # print("Generating OMS...")
     # generator = OMS_Generator()
     # OMS = generator.generator_all(sales_import)
@@ -44,6 +45,8 @@ def main():
 
     # with open("output.json", 'w') as f:
     #     json.dump(sales_import, f)
+
+    # generate excel output file
     if os.path.isfile("output.xlsx"):
         os.remove("output.xlsx")
     book = xlsxwriter.Workbook("output.xlsx")

@@ -1,5 +1,6 @@
 import json
 import re
+import pandas as pd
 # LINE: PO Line #
 # SKU: (not yet)
 # VENDOR PN: Vendor Style
@@ -16,7 +17,7 @@ class PO_Match:
     def __init__(self) -> None:
         # parse_res: OCR parsed result for PO
         
-        
+        self.PO_keys = []
         self.variables = {}
         self.data = []
         self.length = 0
@@ -40,7 +41,8 @@ class PO_Match:
             "Payment Terms Net Due Date": "Net Due Date:",
             "Payment Terms Net Days": "Net Days:",
             "Buyers Catalog or Stock Keeping #": "SKU",
-            "PO Total Amount": "ITEMTOTAL"
+            "PO Total Amount": "total",
+            "PO Total Weight": "Weight:",
         }
         
         self.initial_part = {
@@ -64,6 +66,7 @@ class PO_Match:
             "Payment Terms Net Days": "",
             "Buyers Catalog or Stock Keeping #": "",
             "PO Total Amount": "",
+            "PO Total Weight": "",
         }
         
         f = open("config/field_names_SalesImport_original.json")
@@ -202,7 +205,9 @@ class PO_Match:
                 input[key] = []
 
                 for i in range(1, length):
+                    print(input[self.pair[key]][i])
                     temp = re.findall(r'\d\.\d+', input[self.pair[key]][i])
+                    print(temp)
                     input[key].append("".join(temp))
                 
                 input[key].insert(0, "")
@@ -223,29 +228,51 @@ class PO_Match:
             else:
                 input[key] = input[self.pair[key]]
                 del input[self.pair[key]]
-        # print(input)
         return input
     
     def match_formula(self, input):
         #return all {"field": field_value}
-        
+        temp_key = input.keys()
+
         for item in self.field_names:
-            for _ in range(self.length):
-                input.update({item: ""})
+            if item not in temp_key:
+                temp = []
+                
+                for _ in range(self.length):
+                    temp.append("")
+                
+                input.update({item: temp})
             
         return input
     
     def match_final(self, PO_res):
+
+
         # return final result
-        
         output = self.match_plain(PO_res)
+        
+        # get PO_res keys
+        self.PO_keys = list(output[0].keys())
+        self.PO_inherited = []
+        for key in self.pair:
+            self.PO_inherited.append(self.pair[key])
+
+        #register un-inherited keys
+        
         # print(output[0])
-        for i, page in enumerate(output):
+        for page in output:
             self.length = len(page["LINE"])
             item = self.match_same(page)
             item = self.match_formula(item)
-            output.pop(i)
-            output.insert(i, item)
+            # output.pop(i)
+            # output.insert(i, item)
+            for key in self.PO_keys:
+                if key not in self.PO_inherited:
+                    del item[key]
+        
         print(output)
+        df = pd.DataFrame(output[0])
+        df.to_excel("sales_origin.xlsx")
+
         return output
         

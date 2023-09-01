@@ -86,26 +86,17 @@ class PDF_parsing:
                             res[f"PDF{k}"][f"page{page_num}"][key].append("")
 
                 # main table addition
-                product_keys = product_table[0]
-                product_table_ = product_table[1 : len(product_table) - 1]
                 
+                # product_keys = product_table[0]
+                product_table_ = product_table[1 : len(product_table) - 1]
+                product_keys = ['LINE', 'SKU', 'VENDOR PN', 'UPC/GTIN', 'DESCRIPTIONLINE ITEM COMMENTS', 'MARKS AND NUMBERS', 'UNIT COST/RETAIL PRICE', 'QTY', 'UOM', 'ITEMTOTAL']
                 product_dic = {}
-
                 for key in product_keys:
                     product_dic.update({key:[]})
 
-                for line in product_table_:
-                    product_dic['LINE'].append(line[0])
-                    product_dic['SKU'].append(line[1])
-                    product_dic['VENDOR PN'].append(line[2])
-                    product_dic['UPC/GTIN'].append(line[3])
-                    product_dic['DESCRIPTIONLINE ITEM COMMENTS'].append(line[4])
-                    product_dic['MARKS AND\nNUMBERS'].append(line[5])
-                    product_dic['UNIT COST/RETAIL\nPRICE'].append(line[6])
-                    product_dic['QTY'].append(line[7])
-                    product_dic['UOM'].append(line[8])
-                    product_dic['ITEMTOTAL'].append(line[9])
-                
+                for i, line in enumerate(product_table_):
+                    for i, key in enumerate(product_keys):
+                        product_dic[key].append(line[i])
                 for i in range(len(product_table_)):
                     for key in self.keys:
                         if key in product_keys:

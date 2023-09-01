@@ -5,12 +5,9 @@ import pandas as pd
 class Integreate_All:
     def __init__(self) -> None:
         # Initialize productLib and UOM
-        UOM = pd.read_csv("config/UOM.csv")
+        self.uom = pd.read_csv("config/uom_sku.csv")
         self.length = 0
-        
-        product_lib = ""
-        pass
-    
+            
     def auto_fun(self, customer_name):
         OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
@@ -79,14 +76,12 @@ class Integreate_All:
         return price_amount
     
     def fun_total(self, quantity, price_amount):
-        total = []
+        total = [""]
 
         for i in range(1, self.length):
             total.append(quantity[i] * price_amount[i])
 
-        total.insert(0, "")
-
-        return total
+        return {"Total*": total}
     
     def fun_invoicenumber(self, m_po_number):
         return m_po_number
@@ -101,13 +96,30 @@ class Integreate_All:
     def fun_invoicedata_expiredate(self, m_shipdates: str):
         return m_shipdates
     
-    def fun_iteration(self, input):
+    def fun_iter_all(self, input):
         temp = []
         
         for _ in range(self.length):
             temp.append(input)
         
         return temp
+    
+    def fun_iter_line(self, input):
+        temp = []
+        temp.append("")
+
+        for _ in range(self.length - 1):
+            temp.append(input)
+        
+        return temp
+    
+    def fun_invoice(self):
+        temp = []
+        temp.append("invoice")
+        for _ in range(self.length - 1):
+            temp.append("invoiceline")
+
+        return {"RecordType*": temp}
     
     def Integrate_final(self, matching_res):
         SalesImport = []
@@ -125,23 +137,49 @@ class Integreate_All:
 
             SalesImport[i].update(
                 {
-                    "Price/Amount*": self.fun_Price_Amount(element["Qty Ordered"], element["Unit Price"]),
                     "ShippingNotes": self.fun_shippingnotes(element["Ship Dates"], element["Cancel Date"]),
                     "InvoiceDate*/ExpireDate": self.fun_invoicedata_expiredate(element["Ship Dates"]),
-                    "YourBaseCurrency*": self.fun_iteration("USD"),
+                    "YourBaseCurrency*": self.fun_iter_all("USD"),
                     
                 }
             )
             # print(SalesImport)
             SalesImport[i].update(
                 {
-                    "CustomerName*": self.fun_iteration("BUC-EE'S"),
+                    "CustomerName*": self.fun_iter_all("BUC-EE'S"),
                 }
             )
 
             # Add inherited fields
             SalesImport[i].update(self.auto_fun("BUC-EE'S"))
             
-        
-        
+            # Add RecordType
+            SalesImport[i].update(self.fun_invoice())
+
+            # Add [Product*, quantity*, Price/Amount], Total*
+            product = {"Product*": [""]}
+            quantity = {"Quantity*": [""]}
+            price = {"Price/Amount*": [""]}
+            for k in range(1, self.length):
+                if element["Vendor Style"][k] in self.uom.keys():
+                    product["Product*"].append(self.uom[element["Vendor Style"][k]][0])
+                    print(element["Qty Ordered"][k])
+                    print(self.uom[element["Vendor Style"][k]][1])
+                    quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.uom[element["Vendor Style"][k]][1])))
+                    price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.uom[element["Vendor Style"][k]][1]))
+            
+            SalesImport[i].update(product)
+            SalesImport[i].update(quantity)
+            SalesImport[i].update(price)
+            SalesImport[i].update(self.fun_total(quantity["Quantity*"], price["Price/Amount*"]))
+
+            if SalesImport[i]["CustomerCurrency*"][0] == SalesImport[i]["YourBaseCurrency*"][0]:
+                temp = [""]
+                for _ in range(self.length - 1):
+                    temp.append(1)
+                SalesImport[i].update(
+                    {
+                        "CurrencyConversionRate": temp
+                    }
+                )
         return SalesImport
