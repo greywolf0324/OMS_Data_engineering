@@ -5,9 +5,9 @@ import pandas as pd
 class Integreate_All:
     def __init__(self) -> None:
         # Initialize productLib and UOM
-        self.uom = pd.read_csv("config/uom_sku.csv")
+        self.additional_uom = pd.read_csv("config/uom_sku.csv")
         self.length = 0
-            
+        self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
     def auto_fun(self, customer_name):
         OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
@@ -19,7 +19,7 @@ class Integreate_All:
             "StockLocation": "Location",
             "CustomerContact": "ContactComment",
             "CustomerPhone": "Phone",
-            "CustomerEmail": "Email",    
+            "CustomerEmail": "Email",
         }
         
         customer_match = pd.read_csv("config/customer_fields.csv")
@@ -143,7 +143,8 @@ class Integreate_All:
                     
                 }
             )
-            # print(SalesImport)
+
+            #customername
             SalesImport[i].update(
                 {
                     "CustomerName*": self.fun_iter_all("BUC-EE'S"),
@@ -161,12 +162,16 @@ class Integreate_All:
             quantity = {"Quantity*": [""]}
             price = {"Price/Amount*": [""]}
             for k in range(1, self.length):
-                if element["Vendor Style"][k] in self.uom.keys():
-                    product["Product*"].append(self.uom[element["Vendor Style"][k]][0])
+                if element["Vendor Style"][k] in self.additional_uom.keys():
+                    product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
                     print(element["Qty Ordered"][k])
-                    print(self.uom[element["Vendor Style"][k]][1])
-                    quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.uom[element["Vendor Style"][k]][1])))
-                    price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.uom[element["Vendor Style"][k]][1]))
+                    print(self.additional_uom[element["Vendor Style"][k]][1])
+                    quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.additional_uom[element["Vendor Style"][k]][1])))
+                    price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.additional_uom[element["Vendor Style"][k]][1]))
+                
+                else:
+                    #make input boxes can be added to OMS_Additional_UOM
+                    pass
             
             SalesImport[i].update(product)
             SalesImport[i].update(quantity)
@@ -182,4 +187,19 @@ class Integreate_All:
                         "CurrencyConversionRate": temp
                     }
                 )
+            else:
+                #input through input box(make currency rate functionality)
+                pass
+
+            if element["Frt Terms"] == "":
+                #make input box to input Frt Terms
+                pass
+            else:
+                SalesImport[i].update(
+                    {
+                        "Terms": element["Frt Terms"]
+                    }
+                )
+
+        
         return SalesImport

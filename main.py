@@ -1,7 +1,7 @@
 from OCR.parse import PDF_parsing
 from Data_Integration.matching import PO_Match
 from Integration_Add.Integrator import Integreate_All
-from Generation.generator import OMS_Generator
+from OMS_Creation.oms import OMS_Creation
 from csv import DictWriter
 import json
 import pandas as pd
@@ -26,17 +26,16 @@ def main():
     print("Integrating...")
     integreator = Integreate_All()
     sales_import = integreator.Integrate_final(matching_res)
-    print(sales_import)
-    # # Generating OMS
-
-    # print("Generating OMS...")
-    # generator = OMS_Generator()
-    # OMS = generator.generator_all(sales_import)
+    
+    # Generating OMS
+    print("Generating OMS...")
+    generator = OMS_Creation()
+    generator.OMS_generator(sales_import)
     
     print("Just a second, writing...")
     f = open("config/fieldnames_SalesImport.json")
+
     field_names = json.load(f)
-    print(type(field_names))
     # with open('Exam/output/output.csv', 'w') as outfile:
     #     writer = DictWriter(outfile, field_names)
     #     writer.writeheader()
