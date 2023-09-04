@@ -1,6 +1,6 @@
 import json
 import pandas as pd
-
+from csv import writer
 
 class Integreate_All:
     def __init__(self) -> None:
@@ -148,6 +148,12 @@ class Integreate_All:
 
             #customername
             #Add OMS_CustomerName addition functionality
+            lis_customer = [i for i in range(49)] #frontend input here
+            with open("config/OMS_DB/OMS_Customers.csv") as f:
+                writer_object = writer(f)
+
+                writer_object.writerow(lis_customer)
+                f.close()
             SalesImport[i].update(
                 {
                     "CustomerName*": self.fun_iter_all("BUC-EE'S"),
@@ -174,6 +180,13 @@ class Integreate_All:
                 
                 else:
                     #make input boxes can be added to OMS_Additional_UOM
+                    lis_aduom = [] #frontend input here
+                    with open("config/OMS_DB/OMS_AdditionalUOM.csv") as f:
+                        writer_object = writer(f)
+
+                        writer_object.writerow(lis_aduom)
+                        f.close()
+            
                     pass
             
             SalesImport[i].update(product)
@@ -196,6 +209,13 @@ class Integreate_All:
 
             if element["Frt Terms"] == "":
                 #make input box to input Frt Terms
+                lis_payment = [] #frontend input here
+                with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
+                    writer_object = writer(f)
+
+                    writer_object.writerow(lis_payment)
+                    f.close()
+            
                 pass
             else:
                 if element["Frt Terms"] in list(self.paymentterms["Name"]):
@@ -206,6 +226,13 @@ class Integreate_All:
                     )
                 else:
                     #OMS_Paymentterm addition
+                    lis_payment = [] #frontend input here
+                    with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
+                        writer_object = writer(f)
+
+                        writer_object.writerow(lis_payment)
+                        f.close()
+            
                     pass
         
         return SalesImport

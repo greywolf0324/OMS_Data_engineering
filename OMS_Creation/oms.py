@@ -1,4 +1,5 @@
 import pandas as pd
+from csv import writer
 
 class OMS_Creation:
   def __init__(self) -> None:
@@ -11,6 +12,13 @@ class OMS_Creation:
       for product in page["Product*"][1:]:
           if product.split("-")[1] not in self.uom["Name"]:
               #Add uom to UOM
+              lis_uom = [] #frontend input here
+              with open("config/OMS_DB/OMS_UOM.csv") as f:
+                 writer_object = writer(f)
+
+                 writer_object.writerow(lis_uom)
+                 f.close()
+            
               pass
           
   def InventoryList_Addition(self, input):
@@ -20,6 +28,13 @@ class OMS_Creation:
         for product in page["Product*"][1:]:
            if product.split("-")[0] not in self.inventory["ProductCode"]:
               #Add production to Inventory_List
+              lis_inventory = [] #frontend input here
+              with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
+                 writer_object = writer(f)
+
+                 writer_object.writerow(lis_inventory)
+                 f.close()
+            
               pass
 
   def OMS_generator(self, SalesImport):
