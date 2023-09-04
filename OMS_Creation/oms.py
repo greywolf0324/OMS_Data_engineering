@@ -12,7 +12,8 @@ class OMS_Creation:
       for product in page["Product*"][1:]:
           if product.split("-")[1] not in self.uom["Name"]:
               #Add uom to UOM
-              lis_uom = [1] #frontend input here
+              #frontend input here
+              lis_uom = [1]
               with open("config/OMS_DB/OMS_UOM.csv", "a") as f:
                  writer_object = writer(f)
 
@@ -28,7 +29,8 @@ class OMS_Creation:
         for product in page["Product*"][1:]:
            if product.split("-")[0] not in self.inventory["ProductCode"]:
               #Add production to Inventory_List
-              lis_inventory = [i for i in range(122)] #frontend input here
+              #frontend input here
+              lis_inventory = [i for i in range(122)]
               with open("config/OMS_DB/OMS_InventoryList.csv", "a") as f:
                  writer_object = writer(f)
 

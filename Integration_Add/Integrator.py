@@ -149,7 +149,8 @@ class Integreate_All:
 
             #customername
             #Add OMS_CustomerName addition functionality
-            lis_customer = [i for i in range(49)] #frontend input here
+            #frontend input here
+            lis_customer = [i for i in range(49)] 
             with open("config/OMS_DB/OMS_Customers.csv", "a") as f:
                 writer_object = writer(f)
 
@@ -186,7 +187,8 @@ class Integreate_All:
                 else:
                     print("#########################################")
                     # #make input boxes can be added to OMS_Additional_UOM
-                    lis_aduom = [i for i in range(9)] #frontend input here
+                    #frontend input here
+                    lis_aduom = [i for i in range(9)]
                     with open("config/OMS_DB/OMS_AdditionalUOM.csv", "a") as f:
                         writer_object = writer(f)
 
@@ -220,7 +222,8 @@ class Integreate_All:
 
             if element["Frt Terms"] == "":
                 #make input box to input Frt Terms
-                lis_payment = [i for i in range(2, 7)] #frontend input here
+                #frontend input here
+                lis_payment = [i for i in range(2, 7)]
                 with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
                     writer_object = writer(f)
 
