@@ -81,6 +81,7 @@ class Integreate_All:
         total = [""]
 
         for i in range(1, self.length):
+            # print("@@@@@")
             total.append(quantity[i] * price_amount[i])
 
         return {"Total*": total}
@@ -149,19 +150,21 @@ class Integreate_All:
             #customername
             #Add OMS_CustomerName addition functionality
             lis_customer = [i for i in range(49)] #frontend input here
-            with open("config/OMS_DB/OMS_Customers.csv") as f:
+            with open("config/OMS_DB/OMS_Customers.csv", "a") as f:
                 writer_object = writer(f)
 
                 writer_object.writerow(lis_customer)
                 f.close()
+            
+            customer_name = "BUC-EE'S"
             SalesImport[i].update(
                 {
-                    "CustomerName*": self.fun_iter_all("BUC-EE'S"),
+                    "CustomerName*": self.fun_iter_all(customer_name),
                 }
             )
 
             # Add customername inherited fields
-            SalesImport[i].update(self.auto_fun("BUC-EE'S"))
+            SalesImport[i].update(self.auto_fun(customer_name))
             
             # Add RecordType
             SalesImport[i].update(self.fun_invoice())
@@ -171,23 +174,31 @@ class Integreate_All:
             quantity = {"Quantity*": [""]}
             price = {"Price/Amount*": [""]}
             for k in range(1, self.length):
+                # print(element["Vendor Style"][k])
                 if element["Vendor Style"][k] in self.additional_uom.keys():
+                    print("okay!")
                     product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
-                    print(element["Qty Ordered"][k])
-                    print(self.additional_uom[element["Vendor Style"][k]][1])
+                    # print(element["Qty Ordered"][k])
+                    # print(self.additional_uom[element["Vendor Style"][k]][1])
                     quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.additional_uom[element["Vendor Style"][k]][1])))
                     price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.additional_uom[element["Vendor Style"][k]][1]))
                 
                 else:
-                    #make input boxes can be added to OMS_Additional_UOM
-                    lis_aduom = [] #frontend input here
-                    with open("config/OMS_DB/OMS_AdditionalUOM.csv") as f:
+                    print("#########################################")
+                    # #make input boxes can be added to OMS_Additional_UOM
+                    lis_aduom = [i for i in range(9)] #frontend input here
+                    with open("config/OMS_DB/OMS_AdditionalUOM.csv", "a") as f:
                         writer_object = writer(f)
 
                         writer_object.writerow(lis_aduom)
                         f.close()
-            
-                    pass
+
+                    #frontend input here
+
+                    #variable input
+                    # for i in range(self.length):
+                    #     quantity["Quantity*"]
+                    # pass
             
             SalesImport[i].update(product)
             SalesImport[i].update(quantity)
@@ -209,14 +220,13 @@ class Integreate_All:
 
             if element["Frt Terms"] == "":
                 #make input box to input Frt Terms
-                lis_payment = [] #frontend input here
+                lis_payment = [i for i in range(2, 7)] #frontend input here
                 with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
                     writer_object = writer(f)
 
                     writer_object.writerow(lis_payment)
                     f.close()
             
-                pass
             else:
                 if element["Frt Terms"] in list(self.paymentterms["Name"]):
                     SalesImport[i].update(
@@ -226,8 +236,8 @@ class Integreate_All:
                     )
                 else:
                     #OMS_Paymentterm addition
-                    lis_payment = [] #frontend input here
-                    with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
+                    lis_payment = [1, 2, 3, 4, 5, 6] #frontend input here
+                    with open("config/OMS_DB/OMS_PaymentTerm.csv", "a") as f:
                         writer_object = writer(f)
 
                         writer_object.writerow(lis_payment)

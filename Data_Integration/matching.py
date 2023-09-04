@@ -205,9 +205,7 @@ class PO_Match:
                 input[key] = []
 
                 for i in range(1, length):
-                    print(input[self.pair[key]][i])
                     temp = re.findall(r'\d\.\d+', input[self.pair[key]][i])
-                    print(temp)
                     input[key].append("".join(temp))
                 
                 input[key].insert(0, "")
@@ -270,7 +268,6 @@ class PO_Match:
                 if key not in self.PO_inherited:
                     del item[key]
         
-        print(output)
         df = pd.DataFrame(output[0])
         df.to_excel("sales_origin.xlsx")
 
