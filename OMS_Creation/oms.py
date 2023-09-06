@@ -6,7 +6,7 @@ class OMS_Creation:
     self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
     self.inventory = pd.read_csv("config/OMS_DB/OMS_InventoryList.csv")
     self.length = 0
-
+    self.new_InventoryList = []
   def UOM_Addition(self, input):
      for page in input:
       for product in page["Product*"][1:]:
@@ -21,27 +21,26 @@ class OMS_Creation:
                  f.close()
               self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
           
-  def InventoryList_Addition(self, input):
-     for page in input:
-        self.length = len(page[list(page.keys())[0]])
+#   def InventoryList_Addition(self, input):
+#      for page in input:
+#         self.length = len(page[list(page.keys())[0]])
 
-        for product in page["Product*"][1:]:
-           if product.split("-")[0] not in self.inventory["ProductCode"]:
+#         for product in page["Product*"][1:]:
+#            if product.split("-")[0] not in self.inventory["ProductCode"]:
+#               self.new_InventoryList.append(product.split("-")[0])
               #Add production to Inventory_List
               #frontend input here
-              lis_inventory = [i for i in range(96)]
-              with open("config/OMS_DB/OMS_InventoryList.csv", "a") as f:
-                 writer_object = writer(f)
+            #   lis_inventory = [i for i in range(96)]
+            #   with open("config/OMS_DB/OMS_InventoryList.csv", "a") as f:
+            #      writer_object = writer(f)
 
-                 writer_object.writerow(lis_inventory)
-                 f.close()
+            #      writer_object.writerow(lis_inventory)
+            #      f.close()
             
-              pass
-
   def OMS_generator(self, SalesImport):
 
     #OMS_UOM
     self.UOM_Addition(SalesImport)
     
     #OMS_InventoryList
-    self.InventoryList_Addition(SalesImport)
+   #  self.InventoryList_Addition(SalesImport)

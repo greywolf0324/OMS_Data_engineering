@@ -1,5 +1,7 @@
 from OCR.parse import PDF_parsing
 from Data_Integration.matching import PO_Match
+from DB_Updater.noticer import NOTICER
+from DB_Updater.DB_Updater import Udpater
 from Integration_Add.Integrator import Integreate_All
 from OMS_Creation.oms import OMS_Creation
 from csv import DictWriter
@@ -22,35 +24,40 @@ def main():
     matcher = PO_Match()
     matching_res = matcher.match_final(PO_res)
 
-    # Integration_Add : Generate SalesImport
+    # # Notation: Add following Info to DB
+    # print("Getting newal things...")
+    # noticer = NOTICER()
+    # addition = noticer.getter(matching_res)
+    # #get response from frontend based on "addition"
+    # response_from_frontend = {} #{"OMS_AdditionalUOM": "OMS_PaymentTerm": "OMS_InventoryList":}
+    # ########################################################################################
+    # ##    Add "addition" info to OMS_AdditionalUOM, OMS_PaymentTerm, OMS_InventoryList    ##
+    # ########################################################################################
+    # print("DB Updating...")
+    # udpater = Udpater()
+    # udpater.updater(response_from_frontend)
+
+    # Integration_Add : Generate [SalesImport, new_sku, new_paymentterm]
     print("Integrating...")
     integreator = Integreate_All()
-    sales_import = integreator.Integrate_final(matching_res)
+    SalesImport = integreator.Integrate_final(matching_res)
     
-    # Generating OMS
-    print("Generating OMS...")
-    generator = OMS_Creation()
-    generator.OMS_generator(sales_import)
+    # # Generating OMS
+    # print("Generating OMS...")
+    # generator = OMS_Creation()
+    # generator.OMS_generator(SalesImport)
     
     print("Just a second, writing...")
     f = open("config/fieldnames_SalesImport.json")
 
     field_names = json.load(f)
-    # with open('Exam/output/output.csv', 'w') as outfile:
-    #     writer = DictWriter(outfile, field_names)
-    #     writer.writeheader()
-    #     writer.writerows(sales_import)
-
-
-    # with open("output.json", 'w') as f:
-    #     json.dump(sales_import, f)
 
     # generate excel output file
     if os.path.isfile("output.xlsx"):
         os.remove("output.xlsx")
     book = xlsxwriter.Workbook("output.xlsx")
     sheet = book.add_worksheet("cont_excel")
-    keys = list(sales_import[0].keys())
+    keys = list(SalesImport[0].keys())
     for idx, header in enumerate(field_names):
         sheet.write(0, idx, header)
 
@@ -59,7 +66,7 @@ def main():
     book = load_workbook("output.xlsx")
     sheet = book.get_sheet_by_name("cont_excel")
     
-    for dic in sales_import:
+    for dic in SalesImport:
         for i in range(len(dic[keys[0]])):
             temp = []
 

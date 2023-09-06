@@ -135,10 +135,9 @@ class Integreate_All:
         
         for i, element in enumerate(matching_res):
             #everything will be done here
-            # print(element["Qty Ordered"], element["Unit Price"])
-            # print(list(element.keys())[0])
+
             self.length = len(element[list(element.keys())[0]])
-            # print(self.length)
+
             # Create formula fields
 
             SalesImport[i].update(
@@ -188,28 +187,25 @@ class Integreate_All:
                 price["Price/Amount*"].append(float(input["Unit Price"][num]) * int(self.additional_uom[input["Vendor Style"][num]][1]))
 
             for k in range(1, self.length):
-                # print(element["Vendor Style"][k])
-                if element["Vendor Style"][k] in self.additional_uom.keys():
-                    print("okay!")
-                    vendor_addition(element, k)
-                    product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
-                    # print(element["Qty Ordered"][k])
-                    # print(self.additional_uom[element["Vendor Style"][k]][1])
-                    quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.additional_uom[element["Vendor Style"][k]][1])))
-                    price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.additional_uom[element["Vendor Style"][k]][1]))
+                # if element["Vendor Style"][k] in self.additional_uom.keys():
+                vendor_addition(element, k)
+                product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
+                quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.additional_uom[element["Vendor Style"][k]][1])))
+                price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.additional_uom[element["Vendor Style"][k]][1]))
                 
-                else:
-                    print("#########################################")
+                # else:
+                #     print("#########################################")
+                    # self.new_sku.append(element["Vendor Style"][k])
                     #frontend input here
-                    lis_aduom = [i for i in range(9)]
-                    with open("config/OMS_DB/OMS_AdditionalUOM.csv", "a") as f:
-                        writer_object = writer(f)
+                    # lis_aduom = [i for i in range(9)]
+                    # with open("config/OMS_DB/OMS_AdditionalUOM.csv", "a") as f:
+                    #     writer_object = writer(f)
 
-                        writer_object.writerow(lis_aduom)
-                        f.close()
+                    #     writer_object.writerow(lis_aduom)
+                    #     f.close()
                     
-                    self.re_init()
-                    vendor_addition(element, k)
+                    # self.re_init()
+                    # vendor_addition(element, k)
             
             SalesImport[i].update(product)
             SalesImport[i].update(quantity)
@@ -230,35 +226,43 @@ class Integreate_All:
                 pass
 
             if element["Frt Terms"] == "":
+                #This is temporary plan to avoid non-value!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                SalesImport[i].update(
+                    {
+                        "Terms": element["Frt Terms"]
+                    }
+                )
                 #make input box to input Frt Terms
                 #frontend input here
-                lis_payment = [i for i in range(2, 7)]
-                with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
-                    writer_object = writer(f)
+                # lis_payment = [i for i in range(2, 7)]
+                # with open("config/OMS_DB/OMS_PaymentTerm.csv") as f:
+                #     writer_object = writer(f)
 
-                    writer_object.writerow(lis_payment)
-                    f.close()
+                #     writer_object.writerow(lis_payment)
+                #     f.close()
+                pass
             
             else:
-                if element["Frt Terms"] in list(self.paymentterms["Name"]):
-                    SalesImport[i].update(
-                        {
-                            "Terms": element["Frt Terms"]
-                        }
-                    )
-                else:
+                # if element["Frt Terms"] in list(self.paymentterms["Name"]):
+                SalesImport[i].update(
+                    {
+                        "Terms": element["Frt Terms"]
+                    }
+                )
+                # else:
+                #     self.new_paymentterm.append(element["Frt Terms"])
                     #OMS_Paymentterm addition
-                    lis_payment = [1, 2, 3, 4, 5, 6] #frontend input here
-                    with open("config/OMS_DB/OMS_PaymentTerm.csv", "a") as f:
-                        writer_object = writer(f)
+                    # lis_payment = [1, 2, 3, 4, 5, 6] #frontend input here
+                    # with open("config/OMS_DB/OMS_PaymentTerm.csv", "a") as f:
+                    #     writer_object = writer(f)
 
-                        writer_object.writerow(lis_payment)
-                        f.close()
+                    #     writer_object.writerow(lis_payment)
+                    #     f.close()
                     
-                    SalesImport[i].update(
-                        {
-                            "Terms": element["Frt Terms"]
-                        }
-                    )
+                    # SalesImport[i].update(
+                    #     {
+                    #         "Terms": element["Frt Terms"]
+                    #     }
+                    # )
         
         return SalesImport
