@@ -10,6 +10,9 @@ class Integreate_All:
         self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
         self.paymentterms = pd.read_csv("config/OMS_DB/OMS_PaymentTerm.csv")
 
+    def re_init(self):
+        self.additional_uom = pd.read_csv("config/uom_sku.csv")
+
     def auto_fun(self, customer_name):
         OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
@@ -150,12 +153,14 @@ class Integreate_All:
             #customername
             #Add OMS_CustomerName addition functionality
             #frontend input here
-            lis_customer = [i for i in range(49)] 
-            with open("config/OMS_DB/OMS_Customers.csv", "a") as f:
-                writer_object = writer(f)
+            # lis_customer = [i for i in range(49)] 
+            # with open("config/OMS_DB/OMS_Customers.csv", "a") as f:
+            #     writer_object = writer(f)
 
-                writer_object.writerow(lis_customer)
-                f.close()
+            #     writer_object.writerow(lis_customer)
+            #     f.close()
+
+            
             
             customer_name = "BUC-EE'S"
             SalesImport[i].update(
@@ -174,10 +179,19 @@ class Integreate_All:
             product = {"Product*": [""]}
             quantity = {"Quantity*": [""]}
             price = {"Price/Amount*": [""]}
+
+            def vendor_addition(input, num):
+                product["Product*"].append(self.additional_uom[input["Vendor Style"][num]][0])
+                # print(input["Qty Ordered"][num])
+                # print(self.additional_uom[input["Vendor Style"][num]][1])
+                quantity["Quantity*"].append(int(float(input["Qty Ordered"][num])) / int(float(self.additional_uom[input["Vendor Style"][num]][1])))
+                price["Price/Amount*"].append(float(input["Unit Price"][num]) * int(self.additional_uom[input["Vendor Style"][num]][1]))
+
             for k in range(1, self.length):
                 # print(element["Vendor Style"][k])
                 if element["Vendor Style"][k] in self.additional_uom.keys():
                     print("okay!")
+                    vendor_addition(element, k)
                     product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
                     # print(element["Qty Ordered"][k])
                     # print(self.additional_uom[element["Vendor Style"][k]][1])
@@ -186,7 +200,6 @@ class Integreate_All:
                 
                 else:
                     print("#########################################")
-                    # #make input boxes can be added to OMS_Additional_UOM
                     #frontend input here
                     lis_aduom = [i for i in range(9)]
                     with open("config/OMS_DB/OMS_AdditionalUOM.csv", "a") as f:
@@ -194,13 +207,9 @@ class Integreate_All:
 
                         writer_object.writerow(lis_aduom)
                         f.close()
-
-                    #frontend input here
-
-                    #variable input
-                    # for i in range(self.length):
-                    #     quantity["Quantity*"]
-                    # pass
+                    
+                    self.re_init()
+                    vendor_addition(element, k)
             
             SalesImport[i].update(product)
             SalesImport[i].update(quantity)
@@ -245,7 +254,11 @@ class Integreate_All:
 
                         writer_object.writerow(lis_payment)
                         f.close()
-            
-                    pass
+                    
+                    SalesImport[i].update(
+                        {
+                            "Terms": element["Frt Terms"]
+                        }
+                    )
         
         return SalesImport
