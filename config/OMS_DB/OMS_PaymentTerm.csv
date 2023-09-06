@@ -11,3 +11,4 @@ Name,Days,Method,DueNextMonth,PaymentTermActive,PaymentTermDefault
 75 Days,75,1,-1,TRUE,FALSE
 90 Days,90,1,-1,TRUE,FALSE
 Letter of Credit,0,1,-1,TRUE,FALSE
+1,2,3,4,5,6
