@@ -13,7 +13,7 @@ import xlsxwriter
 import os
 
 def main():
-    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\sample.pdf"]
+    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\multi.pdf"]
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
     parser = PDF_parsing()
@@ -25,11 +25,12 @@ def main():
     matching_res = matcher.match_final(PO_res)
 
     # # Notation: Add following Info to DB
-    # print("Getting newal things...")
-    # noticer = NOTICER()
-    # addition = noticer.getter(matching_res)
-    # #get response from frontend based on "addition"
-    # response_from_frontend = {} #{"OMS_AdditionalUOM": "OMS_PaymentTerm": "OMS_InventoryList":}
+    print("Getting newal things...")
+    noticer = NOTICER()
+    addition = noticer.getter(matching_res)
+    print(addition)
+    #get response from frontend based on "addition"
+    response_from_frontend = {} #{"OMS_AdditionalUOM": "OMS_PaymentTerm": "OMS_InventoryList":}
     # ########################################################################################
     # ##    Add "addition" info to OMS_AdditionalUOM, OMS_PaymentTerm, OMS_InventoryList    ##
     # ########################################################################################
