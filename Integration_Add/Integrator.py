@@ -167,7 +167,12 @@ class Integreate_All:
                     "CustomerName*": self.fun_iter_all(customer_name),
                 }
             )
-
+            # Add InvoiceNumber*
+            SalesImport[i].update(
+                {
+                    "InvoiceNumber*": element["Retailers PO"]
+                }
+            )
             # Add customername inherited fields
             SalesImport[i].update(self.auto_fun(customer_name))
             

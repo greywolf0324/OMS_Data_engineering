@@ -30,7 +30,7 @@ def main():
     addition = noticer.getter(matching_res)
     print(addition)
     #get response from frontend based on "addition"
-    response_from_frontend = {} #{"OMS_AdditionalUOM": "OMS_PaymentTerm": "OMS_InventoryList":}
+    response_from_frontend = [] #{"OMS_AdditionalUOM": "OMS_PaymentTerm": "OMS_InventoryList":}
     # ########################################################################################
     # ##    Add "addition" info to OMS_AdditionalUOM, OMS_PaymentTerm, OMS_InventoryList    ##
     # ########################################################################################
@@ -54,9 +54,9 @@ def main():
     field_names = json.load(f)
 
     # generate excel output file
-    if os.path.isfile("output.xlsx"):
-        os.remove("output.xlsx")
-    book = xlsxwriter.Workbook("output.xlsx")
+    if os.path.isfile("SalesImport.xlsx"):
+        os.remove("SalesImport.xlsx")
+    book = xlsxwriter.Workbook("SalesImport.xlsx")
     sheet = book.add_worksheet("cont_excel")
     keys = list(SalesImport[0].keys())
     for idx, header in enumerate(field_names):
@@ -64,7 +64,7 @@ def main():
 
     book.close()
 
-    book = load_workbook("output.xlsx")
+    book = load_workbook("SalesImport.xlsx")
     sheet = book.get_sheet_by_name("cont_excel")
     
     for dic in SalesImport:
@@ -81,7 +81,7 @@ def main():
                     temp.append("")
             sheet.append(temp) 
     
-    book.save(filename = "output.xlsx")
+    book.save(filename = "SalesImport.xlsx")
 
     print("successful!")
 if __name__ == "__main__":

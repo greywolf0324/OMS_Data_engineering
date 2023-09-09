@@ -43,6 +43,8 @@ class PO_Match:
             "Buyers Catalog or Stock Keeping #": "SKU",
             "PO Total Amount": "total",
             "PO Total Weight": "Weight:",
+            "PO Number": "Order #",
+            "Retailers PO": "Order #",
         }
         
         self.initial_part = {
@@ -67,6 +69,8 @@ class PO_Match:
             "Buyers Catalog or Stock Keeping #": "",
             "PO Total Amount": "",
             "PO Total Weight": "",
+            "PO Number": "",
+            "Retailers PO": "",
         }
         
         f = open("config/field_names_SalesImport_original.json")
@@ -147,7 +151,6 @@ class PO_Match:
         # return res
     
     def match_divide(self, input):
-
         input = list(input)
         input.remove("\n")
         input = "".join(input)
@@ -160,6 +163,17 @@ class PO_Match:
             # f_th = input_[0:temp[1]]
             # s_nd = input_[temp[1]:]
         return [input_[0:temp[1]], input_[temp[1]:]]
+    
+    def order_extract(self, input):
+        print(input)
+        temp = []
+        temp.append(re.findall(r"\d+", input[0])[0][2:])
+        print(type(re.findall(r"\d+", input[0])[0]))
+        for i in range(1, self.length):
+            temp.append("")
+            
+
+        return temp
     
     def match_same(self, input):
         self.initial_part_init()
@@ -223,9 +237,17 @@ class PO_Match:
                 input[key].insert(0, "")
                 del input[self.pair[key]]
 
+            elif key == "PO Number":
+                input[key] = self.order_extract(input[self.pair[key]])
+                del input[self.pair[key]]
+            
+            elif key == "Retailers PO":
+                input[key] = input["PO Number"]
+
             else:
                 input[key] = input[self.pair[key]]
                 del input[self.pair[key]]
+
         return input
     
     def match_formula(self, input):
@@ -257,7 +279,6 @@ class PO_Match:
 
         #register un-inherited keys
         
-        # print(output[0])
         for page in output:
             self.length = len(page["LINE"])
             item = self.match_same(page)

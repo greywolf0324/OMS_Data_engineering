@@ -7,7 +7,7 @@ import os
 
 class PDF_parsing:
     def __init__(self) -> None:
-        self.keys = ['LINE', 'SKU', 'VENDOR PN', 'UPC/GTIN', 'DESCRIPTIONLINE ITEM COMMENTS', 'MARKS AND NUMBERS', 'UNIT COST/RETAIL PRICE', 'QTY', 'UOM', 'ITEMTOTAL', 'PO Date:', 'Requested Delivery Date:', 'Requested Ship Date:', 'Cancel Date:', 'Delivery Window:', 'Shipping Window:', 'Vendor #:', 'Department #:', 'Freight Terms:', 'Preferred Carrier:', 'Terms Type', 'Terms Basis:', 'Terms Disc\n%:', 'Disc. Due Date:', 'Disc. Days:', 'Net Due Date:', 'Net Days:', 'Description:', 'TYPE', 'SERVICE TYPE', 'PERCENT', 'RATE', 'QTY_', 'UOM_', 'DESCRIPTION', 'AMOUNT', 'Total Qty:', 'Weight:', 'Volume:', 'Purchase Order Total:', '280.80']
+        self.keys = ['LINE', 'SKU', 'VENDOR PN', 'UPC/GTIN', 'DESCRIPTIONLINE ITEM COMMENTS', 'MARKS AND NUMBERS', 'UNIT COST/RETAIL PRICE', 'QTY', 'UOM', 'ITEMTOTAL', 'PO Date:', 'Requested Delivery Date:', 'Requested Ship Date:', 'Cancel Date:', 'Delivery Window:', 'Shipping Window:', 'Vendor #:', 'Department #:', 'Freight Terms:', 'Preferred Carrier:', 'Terms Type', 'Terms Basis:', 'Terms Disc\n%:', 'Disc. Due Date:', 'Disc. Days:', 'Net Due Date:', 'Net Days:', 'Description:', 'TYPE', 'SERVICE TYPE', 'PERCENT', 'RATE', 'QTY_', 'UOM_', 'DESCRIPTION', 'AMOUNT', 'Total Qty:', 'Weight:', 'Volume:', 'Purchase Order Total:', '280.80', 'Order #']
 
 
     def re_fun(self, str_input: str) -> dict:
@@ -56,6 +56,11 @@ class PDF_parsing:
                 
                 #non main table addition
                 non_product_tables = []
+                ## non table addition
+                non_table_content = []
+                non_table_str = page.extract_text_simple()
+                non_table_lis = non_table_str.split("\n")
+                non_product_tables.append({"Order #": non_table_lis[4]})
 
                 for i, table in enumerate(page.extract_tables()):
                     if i == 2:
@@ -136,9 +141,8 @@ class PDF_parsing:
                     sheet.append(temp)
 
 
-        book.save(filename = "temp.xlsx")
+        book.save(filename = "OCR_res.xlsx")
         temp = []
         
-        print(temp)
         # pd.DataFrame(data = temp).to_excel("temp.xlsx", index = False)
         return res
