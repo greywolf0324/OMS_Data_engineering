@@ -4,7 +4,10 @@
 #    Apply OCR and get info for each PDFs and pages
 
 # - Data_Integration
-#    Add several fields that comes from matching prior #    fields
+#    Add several fields and get Original_SalesImport
+
+# - DB_Updater
+#    Compare Original_SalesImport & OMS_DB and update OMS(Order Management System) DataBase
 
 # - Integration_Add
-#    Integrate with productLib, UOM and get SalesImport
+#    Get SalesImport by integrating Original_SalesImport & Updated OMS_DB
