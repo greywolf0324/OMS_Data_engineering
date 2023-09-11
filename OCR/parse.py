@@ -5,7 +5,8 @@ from openpyxl import load_workbook
 import xlsxwriter
 import os
 
-class PDF_parsing:
+# PDF Parsing for Buc-EE's 
+class Buc_parsing:
     def __init__(self) -> None:
         self.keys = ['LINE', 'SKU', 'VENDOR PN', 'UPC/GTIN', 'DESCRIPTIONLINE ITEM COMMENTS', 'MARKS AND NUMBERS', 'UNIT COST/RETAIL PRICE', 'QTY', 'UOM', 'ITEMTOTAL', 'PO Date:', 'Requested Delivery Date:', 'Requested Ship Date:', 'Cancel Date:', 'Delivery Window:', 'Shipping Window:', 'Vendor #:', 'Department #:', 'Freight Terms:', 'Preferred Carrier:', 'Terms Type', 'Terms Basis:', 'Terms Disc\n%:', 'Disc. Due Date:', 'Disc. Days:', 'Net Due Date:', 'Net Days:', 'Description:', 'TYPE', 'SERVICE TYPE', 'PERCENT', 'RATE', 'QTY_', 'UOM_', 'DESCRIPTION', 'AMOUNT', 'Total Qty:', 'Weight:', 'Volume:', 'Purchase Order Total:', '280.80', 'Order #']
 
@@ -146,3 +147,22 @@ class PDF_parsing:
         
         # pd.DataFrame(data = temp).to_excel("temp.xlsx", index = False)
         return res
+
+# PDF Parsing for PEPCO
+class PEPCO_Parsing:
+    def __init__(self) -> None:
+        pass
+
+    def PO_parser(self, paths: list):
+        #this function will generate PO table
+        res = {}
+
+        for k, path in enumerate(paths):
+            res[f"PDF{k}"] = {}
+            pdf = pdfplumber.open(path)
+
+        for page_num, page in enumerate(pdf.pages):
+            res[f"PDF{k}"][f"page{page_num}"] = {}
+        
+        return res
+

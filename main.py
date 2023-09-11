@@ -1,8 +1,8 @@
-from OCR.parse import PDF_parsing
+from OCR.parse import Buc_parsing
 from Data_Integration.matching import PO_Match
 from DB_Updater.noticer import NOTICER
 from DB_Updater.DB_Updater import Udpater
-from Integration_Add.Integrator import Integreate_All
+from Integration_Add.Integrator import Integrate_All
 from OMS_Creation.oms import OMS_Creation
 from csv import DictWriter
 import json
@@ -12,14 +12,15 @@ from openpyxl import load_workbook
 import xlsxwriter
 import os
 
-def main():
-    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Exam\input\PDF\multi.pdf"]
+def main(st: str):
+    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Experiment_result\input\PDF\Buc-EE's\multi.pdf"]
+    
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
-    parser = PDF_parsing()
+    parser = globals()[st]()
     PO_res = parser.PO_parser(paths)
 
-    # Data_Integration : Generate SalesImport_Original
+    # Data_Integration: Generate SalesImport_Original
     print("On Match Operating...")
     matcher = PO_Match()
     matching_res = matcher.match_final(PO_res)
@@ -40,7 +41,7 @@ def main():
 
     # Integration_Add : Generate [SalesImport, new_sku, new_paymentterm]
     print("Integrating...")
-    integreator = Integreate_All()
+    integreator = Integrate_All()
     SalesImport = integreator.Integrate_final(matching_res)
     
     # # Generating OMS
@@ -86,6 +87,6 @@ def main():
     print("successful!")
 if __name__ == "__main__":
     
-    main()
+    main("Buc_parsing")
     
     
