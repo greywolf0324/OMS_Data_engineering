@@ -2,7 +2,7 @@ import json
 import pandas as pd
 from csv import writer
 
-class Integreate_All:
+class Integrate_All:
     def __init__(self) -> None:
         # Initialize productLib and UOM
         self.additional_uom = pd.read_csv("config/uom_sku.csv")
