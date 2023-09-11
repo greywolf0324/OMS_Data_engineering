@@ -1,8 +1,20 @@
+<<<<<<< HEAD
 from OCR.parse import Buc_parsing, PEPCO_Parsing
 from Data_Integration.matching import PO_Match
 from DB_Updater.noticer import NOTICER
 from DB_Updater.DB_Updater import Udpater
 from Integration_Add.Integrator import BUC_Integrate_All, PEPCO_Integrate_All
+=======
+<<<<<<< HEAD
+from OCR.parse import Buc_parsing, PEPCO_Parsing
+=======
+from OCR.parse import Buc_parsing
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
+from Data_Integration.matching import PO_Match
+from DB_Updater.noticer import NOTICER
+from DB_Updater.DB_Updater import Udpater
+from Integration_Add.Integrator import Integrate_All
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
 from OMS_Creation.oms import OMS_Creation
 from csv import DictWriter
 import json
@@ -12,12 +24,29 @@ from openpyxl import load_workbook
 import xlsxwriter
 import os
 
+<<<<<<< HEAD
 def Sys_Buc():
     paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Experiment_result\input\PDF\Buc-EE's\sample.pdf"]
     
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
     parser = Buc_parsing()
+=======
+<<<<<<< HEAD
+def Sys_Buc():
+=======
+def main(st: str):
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
+    paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Experiment_result\input\PDF\Buc-EE's\multi.pdf"]
+    
+    # OCR : Parsing PDF and generate table results
+    print("On PDF parsing...")
+<<<<<<< HEAD
+    parser = Buc_parsing()
+=======
+    parser = globals()[st]()
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
     PO_res = parser.PO_parser(paths)
 
     # Data_Integration: Generate SalesImport_Original
@@ -41,7 +70,11 @@ def Sys_Buc():
 
     # Integration_Add : Generate [SalesImport, new_sku, new_paymentterm]
     print("Integrating...")
+<<<<<<< HEAD
     integreator = BUC_Integrate_All()
+=======
+    integreator = Integrate_All()
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
     SalesImport = integreator.Integrate_final(matching_res)
     
     # # Generating OMS
@@ -93,6 +126,7 @@ def Sys_PEPCO():
     parser = PEPCO_Parsing()
     PO_res = parser.PO_parser(paths)
 
+<<<<<<< HEAD
     # Integration_Add: Generate SalesImport\
     print("Integrating...")
     integrator = PEPCO_Integrate_All()
@@ -140,5 +174,16 @@ if __name__ == "__main__":
     st = "Sys_PEPCO"
     
     globals()[st]()
+=======
+if __name__ == "__main__":
+    
+<<<<<<< HEAD
+    st = "Sys_Buc"
+    
+    globals()[st]()
+=======
+    main("Buc_parsing")
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
     
     
