@@ -5,7 +5,8 @@ from openpyxl import load_workbook
 import xlsxwriter
 import os
 
-class PDF_parsing:
+# PDF Parsing for Buc-EE's 
+class Buc_parsing:
     def __init__(self) -> None:
         self.keys = ['LINE', 'SKU', 'VENDOR PN', 'UPC/GTIN', 'DESCRIPTIONLINE ITEM COMMENTS', 'MARKS AND NUMBERS', 'UNIT COST/RETAIL PRICE', 'QTY', 'UOM', 'ITEMTOTAL', 'PO Date:', 'Requested Delivery Date:', 'Requested Ship Date:', 'Cancel Date:', 'Delivery Window:', 'Shipping Window:', 'Vendor #:', 'Department #:', 'Freight Terms:', 'Preferred Carrier:', 'Terms Type', 'Terms Basis:', 'Terms Disc\n%:', 'Disc. Due Date:', 'Disc. Days:', 'Net Due Date:', 'Net Days:', 'Description:', 'TYPE', 'SERVICE TYPE', 'PERCENT', 'RATE', 'QTY_', 'UOM_', 'DESCRIPTION', 'AMOUNT', 'Total Qty:', 'Weight:', 'Volume:', 'Purchase Order Total:', '280.80', 'Order #']
 
@@ -146,3 +147,108 @@ class PDF_parsing:
         
         # pd.DataFrame(data = temp).to_excel("temp.xlsx", index = False)
         return res
+
+# PDF Parsing for PEPCO
+class PEPCO_Parsing:
+    def __init__(self) -> None:
+        self.keys = ["Order - ID", "Pre Order -ID", "Item No", "Item classification", "Item name", "Item name English", "Promotional product", "Supplier product code", "Season", "Merch code", "Collection", "Pictogram no", "Style type", "Supplier name", "Supplier ID", "Terms of payments", "Date of order creation", "Booking date", "Handover date", "Port of shipment", "Destination port", "Destination DC", "Delivery terms", "Transport mode", "Time of delivery", "Purchase price", "Total", "ONE", "Pack multiplier", "Total qty in outer"]
+
+    def PO_parser(self, paths: list):
+        #this function will generate PO table
+        res = {}
+
+        for k, path in enumerate(paths):
+            res[f"PDF{k}"] = {}
+            pdf = pdfplumber.open(path)
+
+            for key in self.keys:
+                res[f"PDF{k}"].update({key: []})
+
+            for page_num, page in enumerate(pdf.pages):
+                if page_num == 0:
+                    
+
+                    content = page.extract_text_simple().split("\n")
+
+                    for i in range(13):
+                        res[f"PDF{k}"].update(
+                            {
+                                self.keys[i]: content[i + 5].split(".")[-1][1:]
+                            }
+                        )
+                    
+                    for i in range(4):
+                        res[f"PDF{k}"].update(
+                            {
+                                self.keys[i + 13]: content[i + 19].split(".")[-1][1:]
+                            }
+                        )
+
+                    for i in range(8):
+                        res[f"PDF{k}"].update(
+                            {
+                                self.keys[i + 17]: content[i + 24].split(".")[-1][1:]
+                            }
+                        )
+
+                if page_num == 1:
+                    content = page.extract_text_simple().split("\n")
+
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[25]: " ".join(content[6].split(" ")[3:])
+                            }
+                        )
+                    
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[26]: content[8].split(".")[-1][1:]
+                            }
+                        )
+                
+                if page_num == 2:
+                    content = page.extract_text_simple().split("\n")
+
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[27]: content[13].split(" ")[1]
+                            }
+                        )
+                    
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[28]: content[13].split(" ")[3]
+                            }
+                        )
+                    
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[29]: content[13].split(" ")[4]
+                            }
+                        )
+                    
+        if os.path.isfile("OCR_res.xlsx"):
+            os.remove("OCR_res.xlsx")
+        book = xlsxwriter.Workbook("OCR_res.xlsx")
+        sheet = book.add_worksheet("cont_excel")
+        for idx, header in enumerate(self.keys):
+            sheet.write(0, idx, header)
+        sheet.write(0, len(self.keys), "total")
+        book.close()
+
+        book = load_workbook("OCR_res.xlsx")
+        sheet = book.get_sheet_by_name("cont_excel")
+        for dic in res:
+            temp = []
+
+            for key in res[dic].keys():
+                # print(len(res[dic]["LINE"]))
+                # print(res[dic])
+                # print(key)
+                temp.append(res[dic][key])
+            sheet.append(temp)
+
+
+        book.save(filename = "OCR_res.xlsx")
+        return res
+
