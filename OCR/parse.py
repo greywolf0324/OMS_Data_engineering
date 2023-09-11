@@ -151,7 +151,11 @@ class Buc_parsing:
 # PDF Parsing for PEPCO
 class PEPCO_Parsing:
     def __init__(self) -> None:
+<<<<<<< HEAD
         self.keys = ["Order - ID", "Pre Order -ID", "Item No", "Item classification", "Item name", "Item name English", "Promotional product", "Supplier product code", "Season", "Merch code", "Collection", "Pictogram no", "Style type", "Supplier name", "Supplier ID", "Terms of payments", "Date of order creation", "Booking date", "Handover date", "Port of shipment", "Destination port", "Destination DC", "Delivery terms", "Transport mode", "Time of delivery", "Purchase price", "Total", "ONE", "Pack multiplier", "Total qty in outer"]
+=======
+        pass
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
 
     def PO_parser(self, paths: list):
         #this function will generate PO table
@@ -161,6 +165,7 @@ class PEPCO_Parsing:
             res[f"PDF{k}"] = {}
             pdf = pdfplumber.open(path)
 
+<<<<<<< HEAD
             for key in self.keys:
                 res[f"PDF{k}"].update({key: []})
 
@@ -228,5 +233,10 @@ class PEPCO_Parsing:
                                 self.keys[29]: content[13].split(" ")[4]
                             }
                         )
+=======
+        for page_num, page in enumerate(pdf.pages):
+            res[f"PDF{k}"][f"page{page_num}"] = {}
+        
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
         return res
 

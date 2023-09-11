@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from OCR.parse import Buc_parsing, PEPCO_Parsing
+=======
+from OCR.parse import Buc_parsing
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
 from Data_Integration.matching import PO_Match
 from DB_Updater.noticer import NOTICER
 from DB_Updater.DB_Updater import Udpater
@@ -12,12 +16,20 @@ from openpyxl import load_workbook
 import xlsxwriter
 import os
 
+<<<<<<< HEAD
 def Sys_Buc():
+=======
+def main(st: str):
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
     paths = [r"E:\work\Daily\8_10\_N\OMS_Data_engineering\Experiment_result\input\PDF\Buc-EE's\multi.pdf"]
     
     # OCR : Parsing PDF and generate table results
     print("On PDF parsing...")
+<<<<<<< HEAD
     parser = Buc_parsing()
+=======
+    parser = globals()[st]()
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
     PO_res = parser.PO_parser(paths)
 
     # Data_Integration: Generate SalesImport_Original
@@ -95,8 +107,12 @@ def Sys_PEPCO():
 
 if __name__ == "__main__":
     
+<<<<<<< HEAD
     st = "Sys_Buc"
     
     globals()[st]()
+=======
+    main("Buc_parsing")
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
     
     
