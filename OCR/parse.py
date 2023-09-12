@@ -5,7 +5,12 @@ from openpyxl import load_workbook
 import xlsxwriter
 import os
 
+<<<<<<< HEAD
 class PDF_parsing_BUC:
+=======
+# PDF Parsing for Buc-EE's 
+class Buc_parsing:
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
     def __init__(self) -> None:
         self.keys = ['LINE', 'SKU', 'VENDOR PN', 'UPC/GTIN', 'DESCRIPTIONLINE ITEM COMMENTS', 'MARKS AND NUMBERS', 'UNIT COST/RETAIL PRICE', 'QTY', 'UOM', 'ITEMTOTAL', 'PO Date:', 'Requested Delivery Date:', 'Requested Ship Date:', 'Cancel Date:', 'Delivery Window:', 'Shipping Window:', 'Vendor #:', 'Department #:', 'Freight Terms:', 'Preferred Carrier:', 'Terms Type', 'Terms Basis:', 'Terms Disc\n%:', 'Disc. Due Date:', 'Disc. Days:', 'Net Due Date:', 'Net Days:', 'Description:', 'TYPE', 'SERVICE TYPE', 'PERCENT', 'RATE', 'QTY_', 'UOM_', 'DESCRIPTION', 'AMOUNT', 'Total Qty:', 'Weight:', 'Volume:', 'Purchase Order Total:', '280.80', 'Order #']
 
@@ -147,6 +152,7 @@ class PDF_parsing_BUC:
         print(temp)
         # pd.DataFrame(data = temp).to_excel("temp.xlsx", index = False)
         return res
+<<<<<<< HEAD
     
 # PDF Parsing for PEPCO
 class PEPCO_Parsing:
@@ -155,6 +161,23 @@ class PEPCO_Parsing:
         pass
 
     def PO_parser(self, paths: list, currency):
+=======
+
+# PDF Parsing for PEPCO
+class PEPCO_Parsing:
+    def __init__(self) -> None:
+<<<<<<< HEAD
+        self.keys = ["Order - ID", "Pre Order -ID", "Item No", "Item classification", "Item name", "Item name English", "Promotional product", "Supplier product code", "Season", "Merch code", "Collection", "Pictogram no", "Style type", "Supplier name", "Supplier ID", "Terms of payments", "Date of order creation", "Booking date", "Handover date", "Port of shipment", "Destination port", "Destination DC", "Delivery terms", "Transport mode", "Time of delivery", "Purchase price", "Total", "ONE", "Pack multiplier", "Total qty in outer"]
+=======
+<<<<<<< HEAD
+        self.keys = ["Order - ID", "Pre Order -ID", "Item No", "Item classification", "Item name", "Item name English", "Promotional product", "Supplier product code", "Season", "Merch code", "Collection", "Pictogram no", "Style type", "Supplier name", "Supplier ID", "Terms of payments", "Date of order creation", "Booking date", "Handover date", "Port of shipment", "Destination port", "Destination DC", "Delivery terms", "Transport mode", "Time of delivery", "Purchase price", "Total", "ONE", "Pack multiplier", "Total qty in outer"]
+=======
+        pass
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
+
+    def PO_parser(self, paths: list):
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
         #this function will generate PO table
         res = {}
 
@@ -162,14 +185,26 @@ class PEPCO_Parsing:
             res[f"PDF{k}"] = {}
             pdf = pdfplumber.open(path)
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
             for key in self.keys:
                 res[f"PDF{k}"].update({key: []})
 
             for page_num, page in enumerate(pdf.pages):
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
                 if page_num == 0:
                     
 
                     content = page.extract_text_simple().split("\n")
+<<<<<<< HEAD
                     if currency == "eur":
                         for i in range(13):
                             res[f"PDF{k}"].update(
@@ -283,6 +318,82 @@ class PEPCO_Parsing:
                                     self.keys[29]: content[10].split(" ")[4]
                                 }
                             )
+=======
+=======
+                res[f"PDF{k}"] = {}
+
+                if page_num == 0:
+                    
+
+                    content = page.extract_text_simple()
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
+
+                    for i in range(13):
+                        res[f"PDF{k}"].update(
+                            {
+                                self.keys[i]: content[i + 5].split(".")[-1][1:]
+                            }
+                        )
+                    
+                    for i in range(4):
+                        res[f"PDF{k}"].update(
+                            {
+                                self.keys[i + 13]: content[i + 19].split(".")[-1][1:]
+                            }
+                        )
+
+                    for i in range(8):
+                        res[f"PDF{k}"].update(
+                            {
+                                self.keys[i + 17]: content[i + 24].split(".")[-1][1:]
+                            }
+                        )
+
+                if page_num == 1:
+<<<<<<< HEAD
+                    content = page.extract_text_simple().split("\n")
+=======
+                    content = page.extract_text_simple()
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
+
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[25]: " ".join(content[6].split(" ")[3:])
+                            }
+                        )
+                    
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[26]: content[8].split(".")[-1][1:]
+                            }
+                        )
+                
+                if page_num == 2:
+<<<<<<< HEAD
+                    content = page.extract_text_simple().split("\n")
+=======
+                    content = page.extract_text_simple()
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
+
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[27]: content[13].split(" ")[1]
+                            }
+                        )
+                    
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[28]: content[13].split(" ")[3]
+                            }
+                        )
+                    
+                    res[f"PDF{k}"].update(
+                            {
+                                self.keys[29]: content[13].split(" ")[4]
+                            }
+                        )
+<<<<<<< HEAD
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
                     
         if os.path.isfile("OCR_res.xlsx"):
             os.remove("OCR_res.xlsx")
@@ -307,5 +418,17 @@ class PEPCO_Parsing:
 
 
         book.save(filename = "OCR_res.xlsx")
+<<<<<<< HEAD
 
         return res
+=======
+=======
+=======
+        for page_num, page in enumerate(pdf.pages):
+            res[f"PDF{k}"][f"page{page_num}"] = {}
+        
+>>>>>>> a4aec287cb11ba11dc90c80e78685035af5176fb
+>>>>>>> 30d5ecb1a2a3f34d8b139374f3abfadbdafdd438
+        return res
+
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb

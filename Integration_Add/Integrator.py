@@ -3,15 +3,23 @@ import pandas as pd
 from csv import writer
 from pathlib import Path
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
 class Integrate_All:
     def __init__(self) -> None:
         # Initialize productLib and UOM
         self.additional_uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/uom_sku.csv")
         self.length = 0
+<<<<<<< HEAD
         self.currency = ""
         self.uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_UOM.csv")
         self.paymentterms = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_PaymentTerm.csv")
+=======
+        self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
+        self.paymentterms = pd.read_csv("config/OMS_DB/OMS_PaymentTerm.csv")
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
         self.OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
             "TaxRule*": "TaxRule",
@@ -27,7 +35,11 @@ class Integrate_All:
         }
 
     def auto_fun(self, customer_name):        
+<<<<<<< HEAD
         customer_match = pd.read_csv(Path(__file__).resolve().parent.parent / "config/customer_fields.csv")
+=======
+        customer_match = pd.read_csv("config/customer_fields.csv")
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
         
         values = list(customer_match[customer_name])
         auto_dic = {}
@@ -78,8 +90,17 @@ class Integrate_All:
         shippingnotes = [m_shipdates[0] + "-" + m_canceldates[0]]
         for i in range(1, self.length):
             shippingnotes.append("")
+<<<<<<< HEAD
         
         return shippingnotes
+=======
+        
+        return shippingnotes
+    
+    def fun_invoicedata_expiredate(self, m_shipdates: str):
+        
+        return "/".join(m_shipdates.split("/")[::-1])
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
     
     def fun_invoicedata_expiredate(self, m_shipdates: str):
         temp = []
@@ -141,8 +162,12 @@ class BUC_Integrate_All(Integrate_All):
         
         return temp
     
+<<<<<<< HEAD
     def Integrate_final(self, matching_res, currency):
         self.currency = currency
+=======
+    def Integrate_final(self, matching_res):
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
         SalesImport = []
         # print(len(matching_res))
         for i in range(len(matching_res)):
@@ -289,6 +314,7 @@ class BUC_Integrate_All(Integrate_All):
         return SalesImport
 
 class PEPCO_Integrate_All(Integrate_All):
+<<<<<<< HEAD
     def __init__(self) -> None:
         # Initialize productLib and UOM
         self.additional_uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/uom_sku.csv")
@@ -309,6 +335,8 @@ class PEPCO_Integrate_All(Integrate_All):
             "Terms": "PaymentTerm"
         }
 
+=======
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
     def match_plain(self, input):
         res = []
         for i, _ in enumerate(input):
@@ -323,9 +351,13 @@ class PEPCO_Integrate_All(Integrate_All):
         
         return shippingnotes
     
+<<<<<<< HEAD
     def Integrate_final(self, PO_res, currency):
         self.currency = currency
         print(PO_res, "---------------------------------")
+=======
+    def Integrate_final(self, PO_res):
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
         SalesImport = []
         
         input = self.match_plain(PO_res)
@@ -335,6 +367,7 @@ class PEPCO_Integrate_All(Integrate_All):
 
         for i, element in enumerate(input):
             self.length = 2
+<<<<<<< HEAD
             # Create formula fields
             
             if currency == "eur":
@@ -410,5 +443,65 @@ class PEPCO_Integrate_All(Integrate_All):
                         "CurrencyConversionRate": temp
                     }
                 )
+=======
+
+            # Create formula fields
+            SalesImport[i].update(
+                {
+                    "ShippingNotes": self.fun_shippingnotes(element["Booking date"], element["Handover date"]),
+                    "InvoiceDate*/ExpireDate": [self.fun_invoicedata_expiredate(element["Handover date"]), ""],
+                    "YourBaseCurrency*": self.fun_iter_all(element["Purchase price"].split(" ")[1]),
+                    
+                }
+            )
+
+            customer_name = "Pepco - "
+            if element["Purchase price"].split(" ")[1] == "EUR" or element["Purchase price"].split(" ")[1] == "USD":
+                customer_name = customer_name + element["Purchase price"].split(" ")[1]
+
+            else:
+                customer_name = customer_name + "RMB"
+            
+            SalesImport[i].update(
+                {
+                    "CustomerName*": self.fun_iter_all(customer_name),
+                }
+            )
+            # Add InvoiceNumber*
+            SalesImport[i].update(
+                {
+                    "InvoiceNumber*": [element["Order - ID"], element["Order - ID"]]
+                }
+            )
+
+            # Add customername inherited fields
+            SalesImport[i].update(self.auto_fun(customer_name))
+
+            # Add RecordType
+            SalesImport[i].update(self.fun_invoice())
+
+            # Add [Product*, quantity*, Price/Amount], Total*
+            product = {"Product*": [""]}
+            quantity = {"Quantity*": [""]}
+            price = {"Price/Amount*": [""]}
+
+            product["Product*"].append("")
+            quantity["Quantity*"].append(int(float(element["Total"])) / int(float(element["Total qty in outer"])))
+            st = element["Purchase price"]
+            price["Price/Amount*"].append(float(st.split(" ")[0].split(",")[0] + "." + st.split(" ")[0].split(",")[1]) * int(float(element["Total qty in outer"])))
+
+            SalesImport[i].update(product)
+            SalesImport[i].update(quantity)
+            SalesImport[i].update(price)
+            SalesImport[i].update(self.fun_total(quantity["Quantity*"], price["Price/Amount*"]))
+
+            temp = ["", 1]
+
+            SalesImport[i].update(
+                    {
+                        "CurrencyConversionRate": temp
+                    }
+                )
+>>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
             
         return SalesImport
