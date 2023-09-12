@@ -1,6 +1,7 @@
 import json
 import re
 import pandas as pd
+from pathlib import Path
 # LINE: PO Line #
 # SKU: (not yet)
 # VENDOR PN: Vendor Style
@@ -73,7 +74,7 @@ class PO_Match:
             "Retailers PO": "",
         }
         
-        f = open("config/field_names_SalesImport_original.json")
+        f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
         self.field_names = json.load(f)
         self.field_names_temp = []
         for item in self.field_names:
@@ -151,6 +152,7 @@ class PO_Match:
         # return res
     
     def match_divide(self, input):
+
         input = list(input)
         input.remove("\n")
         input = "".join(input)
@@ -165,7 +167,6 @@ class PO_Match:
         return [input_[0:temp[1]], input_[temp[1]:]]
     
     def order_extract(self, input):
-        print(input)
         temp = []
         temp.append(re.findall(r"\d+", input[0])[0][2:])
         print(type(re.findall(r"\d+", input[0])[0]))
@@ -219,7 +220,9 @@ class PO_Match:
                 input[key] = []
 
                 for i in range(1, length):
+                    print(input[self.pair[key]][i])
                     temp = re.findall(r'\d\.\d+', input[self.pair[key]][i])
+                    print(temp)
                     input[key].append("".join(temp))
                 
                 input[key].insert(0, "")
@@ -247,7 +250,7 @@ class PO_Match:
             else:
                 input[key] = input[self.pair[key]]
                 del input[self.pair[key]]
-
+                
         return input
     
     def match_formula(self, input):
@@ -279,6 +282,7 @@ class PO_Match:
 
         #register un-inherited keys
         
+        # print(output[0])
         for page in output:
             self.length = len(page["LINE"])
             item = self.match_same(page)
@@ -289,6 +293,7 @@ class PO_Match:
                 if key not in self.PO_inherited:
                     del item[key]
         
+        print(output)
         df = pd.DataFrame(output[0])
         df.to_excel("sales_origin.xlsx")
 
