@@ -1,9 +1,0 @@
-Action
-BaseSKU
-BaseProductName
-BaseUnitsOfMeasure
-AdditionalUnitsOfMeasureSKU
-AdditionalUnitsOfMeasureProductName
-AdditionalUnitsOfMeasureName
-NumberOfBaseUnitsInAdditionalUnit
-IAmSellingThisProduct
