@@ -217,14 +217,8 @@ class PO_Match_BUCEE:
             elif key == "Unit Price":
                 input[key] = []
 
-<<<<<<< HEAD
-                for i in range(1, length):
-                    print(input[self.pair[key]][i])
-=======
                 for i in range(1, self.length):
->>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
                     temp = re.findall(r'\d\.\d+', input[self.pair[key]][i])
-                    print(temp)
                     input[key].append("".join(temp))
                 
                 input[key].insert(0, "")
@@ -284,16 +278,10 @@ class PO_Match_BUCEE:
 
         #register un-inherited keys
         
-        # print(output[0])
-<<<<<<< HEAD
-        for page in output:
-            self.length = len(page["LINE"])
-            item = self.match_same(page)
-=======
+        
         for content in output:
             self.length = len(content["LINE"])
             item = self.match_same(content)
->>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
             item = self.match_formula(item)
             # output.pop(i)
             # output.insert(i, item)
@@ -301,14 +289,9 @@ class PO_Match_BUCEE:
                 if key not in self.PO_inherited:
                     del item[key]
         
-<<<<<<< HEAD
-        print(output)
-=======
         # print(output)
->>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         df = pd.DataFrame(output[0])
         df.to_excel("sales_origin.xlsx")
-
         return output
 
 class PO_Match_PEPCO:
@@ -359,6 +342,11 @@ class PO_Match_PEPCO:
     def match_numdivide(self, num):
         return num.split(",")[0] + "." + re.findall(r"\d+", num.split(",")[1])[0]
     
+    def match_remove_space(self, st):
+        st = st.replace(" ", "")
+
+        return st
+    
     def match_plain(self, input):
         res = []
 
@@ -398,7 +386,7 @@ class PO_Match_PEPCO:
         
         #PO Total Amount
         input["PO Total Amount"] = []
-        input["PO Total Amount"].append(float(input["Unit Price"][1]) * float(input["Qty Ordered"][1]))
+        input["PO Total Amount"].append(float(self.match_remove_space(input["Unit Price"][1])) * float(self.match_remove_space(input["Qty Ordered"][1])))
         input["PO Total Amount"].append("")
 
         ##remove fields
