@@ -29,52 +29,15 @@ def uploadFile(data):
             destination.write(chunk)
     return [path, filename]
 
-def requiredFields(data):
-    try:
-        paths = []
-        for file in data:
-            res = uploadFile(file)
-            path = res[0]
-            paths.append(res[0])
-            filename = res[1]
-        
-        # OCR: PDF parsing
-        print("==============================================================================================================")
-        print("On PDF parsing...")
-        parser = BUCEE_Parsing()
-        PO_res = parser.PO_parser(paths)
-
-        # Data_Integration : Generate SalesImport_Original
-        print("==============================================================================================================")
-        print("On Match Operating...")
-        matcher = PO_Match_BUCEE()
-        matching_res = matcher.match_final(PO_res)
-
-        # # Notation: Add following Info to DB
-        print("==============================================================================================================")
-        print("Getting newal things for OMS Update...")
-        
-        # # Extract equal OMS
-        extract = Extractor()
-        OMS_equal = extract.extractor(matching_res)
-        
-        noticer = NOTICER()
-        addition = noticer.getter(matching_res, OMS_equal)
-        return addition
-    except Exception as e:
-        print(e)
-        return ""
-
-def processFile(data, extra):
-    customer_name = "BUC-EE'S"
+def parseUpload(data):
     paths = []
     for file in data:
         res = uploadFile(file)
-        path = res[0]
         paths.append(res[0])
-        filename = res[1]
-
-    #OCR
+    
+    # OCR: PDF parsing
+    print("==============================================================================================================")
+    print("On PDF parsing...")
     parser = BUCEE_Parsing()
     PO_res = parser.PO_parser(paths)
 
@@ -86,11 +49,28 @@ def processFile(data, extra):
 
     # # Notation: Add following Info to DB
     print("==============================================================================================================")
-    print("Getting newal things...")
+    print("Getting newal things for OMS Update...")
+    
+    # # Extract equal OMS
+    extract = Extractor()
+    OMS_equal = extract.extractor(matching_res)
+
+    return [matching_res, OMS_equal]
+        
+def requiredFields(matching_res):
     noticer = NOTICER()
     addition = noticer.getter(matching_res)
-    print(addition)
-    #get response from frontend based on "addition"
+    return addition
+
+def processFile(data, matching_res, extra, customer_name):
+    customer_name = "BUC-EE'S"
+    paths = []
+    for file in data:
+        res = uploadFile(file)
+        path = res[0]
+        paths.append(res[0])
+        filename = res[1]
+
 
     print("==============================================================================================================")
     print("DB Updating...")
@@ -100,7 +80,7 @@ def processFile(data, extra):
     # Integration_Add : Generate SalesImport
     print("==============================================================================================================")
     print("Integrating...")
-    integreator = Integrate_All()
+    integreator = Integrate_All(customer_name=customer_name)
     sales_import = integreator.Integrate_final(matching_res, customer_name)
     
     # Generating OMS
@@ -153,43 +133,35 @@ def processFile(data, extra):
 
     return [path, output]
 
-def requiredFields_2(data):
-    try:
-        paths = []
-        for file in data:
-            res = uploadFile(file)
-            path = res[0]
-            paths.append(res[0])
-            filename = res[1]
-        
-        # OCR: PDF parsing
-        print("==============================================================================================================")
-        print("On PDF parsing...")
-        parser = BUCEE_Parsing()
-        PO_res = parser.PO_parser(paths)
-
-        # Data_Integration : Generate SalesImport_Original
-        print("==============================================================================================================")
-        print("On Match Operating...")
-        matcher = PO_Match_PEPCO()
-        matching_res = matcher.match_final(PO_res)
-
-        # # Notation: Add following Info to DB
-        print("==============================================================================================================")
-        print("Getting newal things for OMS Update...")
-
-        # # Extract equal OMS
-        extract = Extractor()
-        OMS_equal = extract.extractor(matching_res)
-
-        noticer = NOTICER()
-        addition = noticer.getter(matching_res, OMS_equal)
-        return addition
-    except Exception as e:
-        print(e)
-        return ""
+def parseUpload_2(data, currency):
+    paths = []
+    for file in data:
+        res = uploadFile(file)
+        paths.append(res[0])
     
-def processFile_2(data, extra, currency):
+    # OCR: PDF parsing
+    print("==============================================================================================================")
+    print("On PDF parsing...")
+    parser = PEPCO_Parsing()
+    PO_res = parser.PO_parser(paths, currency)
+
+    # Data_Integration : Generate SalesImport_Original
+    print("==============================================================================================================")
+    print("On Match Operating...")
+    matcher = PO_Match_PEPCO()
+    matching_res = matcher.match_final(PO_res)
+
+    # # Notation: Add following Info to DB
+    print("==============================================================================================================")
+    print("Getting newal things for OMS Update...")
+
+    # # Extract equal OMS
+    extract = Extractor()
+    OMS_equal = extract.extractor(matching_res)
+
+    return [matching_res, OMS_equal]
+   
+def processFile_2(data, matching_res, extra, currency):
     customer_name = "Pepco"
     paths = []
     for file in data:
@@ -197,24 +169,6 @@ def processFile_2(data, extra, currency):
         path = res[0]
         paths.append(res[0])
         filename = res[1]
-
-    #OCR
-    parser = PEPCO_Parsing()
-    PO_res = parser.PO_parser(paths, currency)
-
-    #Data_Integration: Generate SalesImport_Original
-    print("======================================================================")    
-    print("On Match Opoerating...")
-    matcher = PO_Match_PEPCO()
-    matching_res = matcher.match_final(PO_res)
-
-    # # Notation: Add following Info to DB
-    print("==============================================================================================================")
-    print("Getting newal things...")
-    noticer = NOTICER()
-    addition = noticer.getter(matching_res)
-    print(addition)
-    #get response from frontend based on "addition"
 
     print("==============================================================================================================")
     print("DB Updating...")
@@ -226,23 +180,10 @@ def processFile_2(data, extra, currency):
     integreator = Integrate_All(customer_name)
     sales_import = integreator.Integrate_final(matching_res, currency)
     
-    # Generating OMS
-    # print("Generating OMS...")
-    # generator = OMS_Creation()
-    # generator.OMS_generator(sales_import)
-    
     print("Just a second, writing...")
     f = open(Path(__file__).resolve().parent / "config/fieldnames_SalesImport.json")
 
     field_names = json.load(f)
-    # with open('Exam/output/output.csv', 'w') as outfile:
-    #     writer = DictWriter(outfile, field_names)
-    #     writer.writeheader()
-    #     writer.writerows(sales_import)
-
-
-    # with open("output.json", 'w') as f:
-    #     json.dump(sales_import, f)
 
     # generate excel output file
     if os.path.isfile("SalesImport.xlsx"):
