@@ -4,6 +4,7 @@ from csv import writer
 from pathlib import Path
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
@@ -20,6 +21,17 @@ class Integrate_All:
         self.uom = pd.read_csv("config/OMS_DB/OMS_UOM.csv")
         self.paymentterms = pd.read_csv("config/OMS_DB/OMS_PaymentTerm.csv")
 >>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
+=======
+
+class Integrate_All:
+    def __init__(self, customer_name) -> None:
+        # Initialize productLib and UOM
+        self.additional_uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/uom_sku.csv")
+        self.length = 0
+        self.currency = ""
+        self.uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_UOM.csv")
+        self.paymentterms = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_PaymentTerm.csv")
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         self.OMS_Customer_Sales_Import = {
             "CustomerCurrency*": "Currency",
             "TaxRule*": "TaxRule",
@@ -33,6 +45,7 @@ class Integrate_All:
             "CustomerEmail": "Email",
             "Terms": "PaymentTerm"
         }
+<<<<<<< HEAD
 
     def auto_fun(self, customer_name):        
 <<<<<<< HEAD
@@ -40,6 +53,12 @@ class Integrate_All:
 =======
         customer_match = pd.read_csv("config/customer_fields.csv")
 >>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
+=======
+        self.customer_name = customer_name
+
+    def auto_fun(self, customer_name):        
+        customer_match = pd.read_csv(Path(__file__).resolve().parent.parent / "config/customer_fields.csv")
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         
         values = list(customer_match[customer_name])
         auto_dic = {}
@@ -91,18 +110,24 @@ class Integrate_All:
         for i in range(1, self.length):
             shippingnotes.append("")
 <<<<<<< HEAD
+<<<<<<< HEAD
         
         return shippingnotes
 =======
+=======
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         
         return shippingnotes
     
     def fun_invoicedata_expiredate(self, m_shipdates: str):
+<<<<<<< HEAD
         
         return "/".join(m_shipdates.split("/")[::-1])
 >>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
     
     def fun_invoicedata_expiredate(self, m_shipdates: str):
+=======
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         temp = []
         if self.currency == "usd":
             temp.append("/".join(m_shipdates[0].split(".")[::-1]))
@@ -130,7 +155,11 @@ class Integrate_All:
 
         return {"RecordType*": temp}
 
+<<<<<<< HEAD
 class BUC_Integrate_All(Integrate_All):
+=======
+class Integrate_All(Integrate_All):
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
     def re_init(self):
         self.additional_uom = pd.read_csv("config/uom_sku.csv")
 
@@ -163,11 +192,16 @@ class BUC_Integrate_All(Integrate_All):
         return temp
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     def Integrate_final(self, matching_res, currency):
         self.currency = currency
 =======
     def Integrate_final(self, matching_res):
 >>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
+=======
+    def Integrate_final(self, matching_res, currency):
+        self.currency = currency
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         SalesImport = []
         # print(len(matching_res))
         for i in range(len(matching_res)):
@@ -200,10 +234,10 @@ class BUC_Integrate_All(Integrate_All):
 
             
             
-            customer_name = "BUC-EE'S"
+            
             SalesImport[i].update(
                 {
-                    "CustomerName*": self.fun_iter_all(customer_name),
+                    "CustomerName*": self.fun_iter_all(self.customer_name),
                 }
             )
 
@@ -215,7 +249,7 @@ class BUC_Integrate_All(Integrate_All):
             )
             print(element["Retailers PO"])
             # Add customername inherited fields
-            SalesImport[i].update(self.auto_fun(customer_name))
+            SalesImport[i].update(self.auto_fun(self.customer_name))
             
             # Add RecordType
             SalesImport[i].update(self.fun_invoice())
@@ -226,18 +260,18 @@ class BUC_Integrate_All(Integrate_All):
             price = {"Price/Amount*": [""]}
 
             def vendor_addition(input, num):
-                product["Product*"].append(self.additional_uom[input["Vendor Style"][num]][0])
+                product["Product*"].append(self.additional_uom["62296"][0])
                 # print(input["Qty Ordered"][num])
                 # print(self.additional_uom[input["Vendor Style"][num]][1])
-                quantity["Quantity*"].append(int(float(input["Qty Ordered"][num])) / int(float(self.additional_uom[input["Vendor Style"][num]][1])))
-                price["Price/Amount*"].append(float(input["Unit Price"][num]) * int(self.additional_uom[input["Vendor Style"][num]][1]))
+                quantity["Quantity*"].append(int(float(input["Qty Ordered"][num])) / int(float(self.additional_uom["62296"][1])))
+                price["Price/Amount*"].append(float(input["Unit Price"][num]) * int(self.additional_uom["62296"][1]))
 
             for k in range(1, self.length):
                 # if element["Vendor Style"][k] in self.additional_uom.keys():
                 vendor_addition(element, k)
-                product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
-                quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.additional_uom[element["Vendor Style"][k]][1])))
-                price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.additional_uom[element["Vendor Style"][k]][1]))
+                product["Product*"].append(self.additional_uom["62296"][0])
+                quantity["Quantity*"].append(int(float(element["Qty Ordered"][k])) / int(float(self.additional_uom["62296"][1])))
+                price["Price/Amount*"].append(float(element["Unit Price"][k]) * int(self.additional_uom["62296"][1]))
                 
                 # else:
                 #     print("#########################################")
@@ -301,6 +335,7 @@ class BUC_Integrate_All(Integrate_All):
             #         # lis_payment = [1, 2, 3, 4, 5, 6] #frontend input here
             #         # with open("config/OMS_DB/OMS_PaymentTerm.csv", "a") as f:
             #         #     writer_object = writer(f)
+<<<<<<< HEAD
 
             #         #     writer_object.writerow(lis_payment)
             #         #     f.close()
@@ -504,4 +539,141 @@ class PEPCO_Integrate_All(Integrate_All):
                 )
 >>>>>>> 434890cfc2c4cf7b7936064b6dce035b3d99a4eb
             
+=======
+
+            #         #     writer_object.writerow(lis_payment)
+            #         #     f.close()
+                    
+            #         # SalesImport[i].update(
+            #         #     {
+            #         #         "Terms": element["Frt Terms"]
+            #         #     }
+            #         # )
+        print(SalesImport)
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         return SalesImport
+
+# class PEPCO_Integrate_All(Integrate_All):
+#     def __init__(self) -> None:
+#         # Initialize productLib and UOM
+#         self.additional_uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/uom_sku.csv")
+#         self.length = 0
+#         self.currency = ""
+#         self.uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_UOM.csv")
+#         self.paymentterms = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_PaymentTerm.csv")
+#         self.OMS_Customer_Sales_Import = {
+#             "TaxRule*": "TaxRule",
+#             "Account": "SaleAccount",
+#             "PriceTier": "PriceTier",
+#             "Discount": "Discount",
+#             "SalesRepresentative*": "SalesRepresentative",
+#             "StockLocation": "Location",
+#             "CustomerContact": "ContactComment",
+#             "CustomerPhone": "Phone",
+#             "CustomerEmail": "Email",
+#             "Terms": "PaymentTerm"
+#         }
+
+#     def match_plain(self, input):
+#         res = []
+#         for i, _ in enumerate(input):
+#             res.append(input[f"PDF{i}"])
+
+#         return res
+    
+#     def fun_shippingnotes(self, m_shipdates: str, m_canceldates: str):
+#         shippingnotes = [m_shipdates + "-" + m_canceldates]
+#         for i in range(1, self.length):
+#             shippingnotes.append("")
+        
+#         return shippingnotes
+    
+#     def Integrate_final(self, PO_res, currency):
+#         self.currency = currency
+#         print(PO_res, "---------------------------------")
+#         SalesImport = []
+        
+#         input = self.match_plain(PO_res)
+
+#         for i in range(len(input)):
+#             SalesImport.append({})
+
+#         for i, element in enumerate(input):
+#             self.length = 2
+#             # Create formula fields
+            
+#             if currency == "eur":
+#                 SalesImport[i].update(
+#                     {
+#                         "ShippingNotes": self.fun_shippingnotes(element["Booking date"], element["Handover date"]),
+#                         "InvoiceDate*/ExpireDate": self.fun_invoicedata_expiredate([element["Handover date"]]),
+#                         "YourBaseCurrency*": self.fun_iter_all(element["Purchase price"].split(" ")[1]),
+                        
+#                     }
+#                 )
+#             else:
+#                 SalesImport[i].update(
+#                     {
+#                         "ShippingNotes": self.fun_shippingnotes(element["Booking date"], element["Handover date"]),
+#                         "InvoiceDate*/ExpireDate": self.fun_invoicedata_expiredate([element["Handover date"]]),
+#                         "YourBaseCurrency*": self.fun_iter_all("USD"),
+                        
+#                     }
+#                 )
+#             SalesImport[i].update(
+#                     {
+#                         "CustomerCurrency*": SalesImport[i]["YourBaseCurrency*"]
+#                     }
+#                 )
+#             customer_name = "Pepco - "
+#             if element["Purchase price"].split(" ")[1] == "EUR" or element["Purchase price"].split(" ")[1] == "USD":
+#                 customer_name = customer_name + element["Purchase price"].split(" ")[1]
+
+#             else:
+#                 customer_name = customer_name + "RMB"
+            
+#             SalesImport[i].update(
+#                 {
+#                     "CustomerName*": self.fun_iter_all(customer_name),
+#                 }
+#             )
+#             # Add InvoiceNumber*
+#             SalesImport[i].update(
+#                 {
+#                     "InvoiceNumber*": [element["Order - ID"], element["Order - ID"]]
+#                 }
+#             )
+
+#             # Add customername inherited fields
+#             SalesImport[i].update(self.auto_fun(customer_name))
+
+#             # Add RecordType
+#             SalesImport[i].update(self.fun_invoice())
+
+#             # Add [Product*, quantity*, Price/Amount], Total*
+#             product = {"Product*": [""]}
+#             quantity = {"Quantity*": [""]}
+#             price = {"Price/Amount*": [""]}
+
+#             product["Product*"].append("")
+#             quantity["Quantity*"].append(int(float(element["Total"])) / int(float(element["Total qty in outer"])))
+#             st = element["Purchase price"]
+#             print(st, "------------------")
+#             if currency == "eur":
+#                 price["Price/Amount*"].append(float(st.split(" ")[0].split(",")[0] + "." + st.split(" ")[0].split(",")[1]) * int(float(element["Total qty in outer"])))
+#             else:
+#                 price["Price/Amount*"].append(float((st.split(",")[0] + "." + st.split(",")[1]).replace(" ", "")) * int(float(element["Total qty in outer"])))
+#             SalesImport[i].update(product)
+#             SalesImport[i].update(quantity)
+#             SalesImport[i].update(price)
+#             SalesImport[i].update(self.fun_total(quantity["Quantity*"], price["Price/Amount*"]))
+
+#             temp = ["", 1]
+
+#             SalesImport[i].update(
+#                     {
+#                         "CurrencyConversionRate": temp
+#                     }
+#                 )
+            
+#         return SalesImport

@@ -15,7 +15,10 @@ class NOTICER:
       self.length = len(element[list(element.keys())[0]])
 
       for k in range(1, self.length):
+<<<<<<< HEAD
         print(element["Vendor Style"][k])
+=======
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
         if (element["Vendor Style"][k] not in self.additional_uom.keys()) and (element["Vendor Style"][k] not in self.new_additional_uom):
           self.new_additional_uom.add(element["Vendor Style"][k])
       
@@ -24,7 +27,10 @@ class NOTICER:
       
       else:
         if element["Frt Terms"][0] not in list(self.paymentterms["Name"]):
+<<<<<<< HEAD
           print(element["Frt Terms"])
+=======
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
           self.new_paymentterm.add(element["Frt Terms"][0])
     
     self.new_InventoryList = self.new_additional_uom

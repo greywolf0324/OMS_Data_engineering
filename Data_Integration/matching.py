@@ -14,7 +14,7 @@ from pathlib import Path
 # ITEMTOTAL: PO Total Amount
 
 
-class PO_Match:
+class PO_Match_BUCEE:
     def __init__(self) -> None:
         # parse_res: OCR parsed result for PO
         
@@ -169,7 +169,6 @@ class PO_Match:
     def order_extract(self, input):
         temp = []
         temp.append(re.findall(r"\d+", input[0])[0][2:])
-        print(type(re.findall(r"\d+", input[0])[0]))
         for i in range(1, self.length):
             temp.append("")
             
@@ -179,7 +178,6 @@ class PO_Match:
     def match_same(self, input):
         self.initial_part_init()
         
-        length = len(input["LINE"])
         # for i, key in enumerate(self.initial_part):
         #     if key == "Product/Item Description":
         #         self.initial_part[key] = self.match_divide(input[self.pair[key]])[0]
@@ -204,7 +202,7 @@ class PO_Match:
                 input[key] = []
                 input["Dept #"] = []
 
-                for i in range(1, length):
+                for i in range(1, self.length):
                     input[key].append(self.match_divide(input[self.pair[key]][i])[0])
                     input["Dept #"].append(self.match_divide(input[self.pair[key]][i])[1])
 
@@ -219,8 +217,12 @@ class PO_Match:
             elif key == "Unit Price":
                 input[key] = []
 
+<<<<<<< HEAD
                 for i in range(1, length):
                     print(input[self.pair[key]][i])
+=======
+                for i in range(1, self.length):
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
                     temp = re.findall(r'\d\.\d+', input[self.pair[key]][i])
                     print(temp)
                     input[key].append("".join(temp))
@@ -232,7 +234,7 @@ class PO_Match:
             elif key == 'Vendor Style':
                 input[key] = []
                 
-                for i in range(1, length):
+                for i in range(1, self.length):
                     # print(input[self.pair[key]])
                     temp = re.findall(r'\d', input[self.pair[key]][i])
                     input[key].append("".join(temp))
@@ -283,9 +285,15 @@ class PO_Match:
         #register un-inherited keys
         
         # print(output[0])
+<<<<<<< HEAD
         for page in output:
             self.length = len(page["LINE"])
             item = self.match_same(page)
+=======
+        for content in output:
+            self.length = len(content["LINE"])
+            item = self.match_same(content)
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
             item = self.match_formula(item)
             # output.pop(i)
             # output.insert(i, item)
@@ -293,9 +301,145 @@ class PO_Match:
                 if key not in self.PO_inherited:
                     del item[key]
         
+<<<<<<< HEAD
+        print(output)
+=======
+        # print(output)
+>>>>>>> b50f29f64d850766456bdd418664b06c81a48f95
+        df = pd.DataFrame(output[0])
+        df.to_excel("sales_origin.xlsx")
+
+        return output
+
+class PO_Match_PEPCO:
+    def __init__(self) -> None:
+        # parse_res: OCR parsed result for PO
+        
+        self.PO_keys = []
+        self.variables = {}
+        self.data = []
+        self.length = 0
+        self.pair = {
+            "PO Number": "Pre Order -ID",
+            "PO Date": "Date of order creation",
+            "Ship Dates": "Booking date",
+            "Cancel Date": "Handover date",
+            "Qty Ordered": "Total",
+            "Unit Price": "Purchase price",
+            "Buyers Catalog or Stock Keeping #": "Item No",
+            "UPC/EAN": "barcode",
+        }
+        self.initial_part = {
+            "PO Number": "",
+            "PO Date": "",
+            "Ship Dates": "",
+            "Cancel Date": "",
+            "Qty Ordered": "",
+            "Unit Price": "",
+            "Buyers Catalog or Stock Keeping #": "",
+            "UPC/EAN": "",
+        }
+
+        f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
+        self.field_names = json.load(f)
+        self.field_names_temp = []
+        for item in self.field_names:
+            self.field_names_temp.append(item) 
+        for item in self.field_names_temp:
+            a = list(self.pair.keys())
+            if item in list(self.pair.keys()):
+                (self.field_names).remove(item)
+
+    def initial_part_init(self):
+        self.initial_part = {}
+        # self.initial_part = self.pair
+        for key in self.pair:
+            self.initial_part.update({key:""})
+    
+    def match_numdivide(self, num):
+        return num.split(",")[0] + "." + re.findall(r"\d+", num.split(",")[1])[0]
+    
+    def match_plain(self, input):
+        res = []
+
+        for i, _ in enumerate(input):
+            pdf = input[f"PDF{i}"]
+            res.append(pdf)
+        
+        return res
+    
+    def match_same(self, input):
+        self.initial_part_init()
+
+        for key in self.pair:
+            if key == "Unit Price":
+                input[key] = []
+                input[key].append("")
+                input[key].append(self.match_numdivide(input[self.pair[key]][0]))
+                del input[self.pair[key]]
+            
+            elif key == "PO Number":
+                input[key] = input[self.pair[key]]
+                input["Retailers PO"] = input[self.pair[key]]
+                del input[self.pair[key]]
+
+            else:
+                input[key] = input[self.pair[key]]
+                del input[self.pair[key]]
+
+        return input
+    
+    def match_fun(self, input):
+        #PO Line #
+        input["PO Line #"] = []
+        input["PO Line #"].append("")
+        for i in range(self.length - 1):
+            input["PO Line #"].append(i + 1)
+        
+        #PO Total Amount
+        input["PO Total Amount"] = []
+        input["PO Total Amount"].append(float(input["Unit Price"][1]) * float(input["Qty Ordered"][1]))
+        input["PO Total Amount"].append("")
+
+        ##remove fields
+        (self.field_names).remove("PO Line #")
+        (self.field_names).remove("PO Total Amount")
+
+        return input
+    
+    def match_formula(self, input):
+        temp_key = input.keys()
+
+        for item in self.field_names:
+            if item not in temp_key:
+                temp = []
+                
+                for _ in range(self.length):
+                    temp.append("")
+                
+                input.update({item: temp})
+            
+        return input
+
+    def match_final(self, PO_res):
+        output = self.match_plain(PO_res)
+
+        self.PO_keys = list(output[0].keys())
+        self.PO_inherited = []
+        for key in self.pair:
+            self.PO_inherited.append(self.pair[key])
+
+        for content in output:
+            self.length = len(content[list(content.keys())[0]])
+            item = self.match_same(content)
+            item = self.match_fun(item)
+            item = self.match_formula(item)
+
+            for key in self.PO_keys:
+                if key not in self.PO_inherited:
+                    del item[key]
         print(output)
         df = pd.DataFrame(output[0])
         df.to_excel("sales_origin.xlsx")
 
         return output
-        
