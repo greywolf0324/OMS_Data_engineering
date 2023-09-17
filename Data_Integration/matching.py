@@ -46,6 +46,14 @@ class PO_Match_BUCEE:
             "PO Total Weight": "Weight:",
             "PO Number": "Order #",
             "Retailers PO": "Order #",
+            "Currency": "PO_currency",
+            "Ship To Name": "Ship To Name",
+            "Ship To Address 1": "Ship To Address 1",
+            "Ship To City": "Ship To City",
+            "Ship To State": "Ship To State",
+            "Ship to Zip": "Ship to Zip",
+            "Ship To Country": "Ship To Country",
+            "Buying Party Name": "Buying Party Name",
         }
         
         self.initial_part = {
@@ -72,6 +80,14 @@ class PO_Match_BUCEE:
             "PO Total Weight": "",
             "PO Number": "",
             "Retailers PO": "",
+            "Currency": "",
+            "Ship To Name": "",
+            "Ship To Address 1": "",
+            "Ship To City": "",
+            "Ship To State": "",
+            "Ship to Zip": "",
+            "Ship To Country": "",
+            "Buying Party Name": "",
         }
         
         f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
@@ -196,7 +212,6 @@ class PO_Match_BUCEE:
         #     else: self.initial_part[key] = input[self.pair[key]]
         
         # return self.initial_part
-
         for key in self.pair:
             if key == "Product/Item Description":
                 input[key] = []
@@ -208,8 +223,6 @@ class PO_Match_BUCEE:
 
                 input[key].insert(0, "")
                 input["Dept #"].insert(0, "")
-                # print(input[key])
-                # print(input["Dept #"])
                 del input[self.pair[key]]
                 
             elif key == "Dept #": continue
@@ -229,7 +242,6 @@ class PO_Match_BUCEE:
                 input[key] = []
                 
                 for i in range(1, self.length):
-                    # print(input[self.pair[key]])
                     temp = re.findall(r'\d', input[self.pair[key]][i])
                     input[key].append("".join(temp))
                 
@@ -243,10 +255,13 @@ class PO_Match_BUCEE:
             elif key == "Retailers PO":
                 input[key] = input["PO Number"]
 
+            elif key in ["Ship To Name", "Ship To Address 1", "Ship To City", "Ship To State", "Ship to Zip", "Ship To Country", "Buying Party Name"]:
+                input[key] = input[self.pair[key]]
+
             else:
                 input[key] = input[self.pair[key]]
                 del input[self.pair[key]]
-                
+
         return input
     
     def match_formula(self, input):
@@ -292,6 +307,7 @@ class PO_Match_BUCEE:
         # print(output)
         df = pd.DataFrame(output[0])
         df.to_excel("sales_origin.xlsx")
+        
         return output
 
 class PO_Match_PEPCO:
@@ -311,6 +327,9 @@ class PO_Match_PEPCO:
             "Unit Price": "Purchase price",
             "Buyers Catalog or Stock Keeping #": "Item No",
             "UPC/EAN": "barcode",
+            "Currency": "PO_currency",
+            
+
         }
         self.initial_part = {
             "PO Number": "",
@@ -321,6 +340,8 @@ class PO_Match_PEPCO:
             "Unit Price": "",
             "Buyers Catalog or Stock Keeping #": "",
             "UPC/EAN": "",
+            "Currency": "",
+            
         }
 
         f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
