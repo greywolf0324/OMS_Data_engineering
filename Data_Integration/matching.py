@@ -46,6 +46,7 @@ class PO_Match_BUCEE:
             "PO Total Weight": "Weight:",
             "PO Number": "Order #",
             "Retailers PO": "Order #",
+            "Currency": "PO_currency",
         }
         
         self.initial_part = {
@@ -72,6 +73,8 @@ class PO_Match_BUCEE:
             "PO Total Weight": "",
             "PO Number": "",
             "Retailers PO": "",
+            "Currency": "",
+
         }
         
         f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
@@ -208,8 +211,6 @@ class PO_Match_BUCEE:
 
                 input[key].insert(0, "")
                 input["Dept #"].insert(0, "")
-                # print(input[key])
-                # print(input["Dept #"])
                 del input[self.pair[key]]
                 
             elif key == "Dept #": continue
@@ -229,7 +230,6 @@ class PO_Match_BUCEE:
                 input[key] = []
                 
                 for i in range(1, self.length):
-                    # print(input[self.pair[key]])
                     temp = re.findall(r'\d', input[self.pair[key]][i])
                     input[key].append("".join(temp))
                 
@@ -311,6 +311,8 @@ class PO_Match_PEPCO:
             "Unit Price": "Purchase price",
             "Buyers Catalog or Stock Keeping #": "Item No",
             "UPC/EAN": "barcode",
+            "Currency": "PO_currency",
+
         }
         self.initial_part = {
             "PO Number": "",
@@ -321,6 +323,8 @@ class PO_Match_PEPCO:
             "Unit Price": "",
             "Buyers Catalog or Stock Keeping #": "",
             "UPC/EAN": "",
+            "Currency": "",
+
         }
 
         f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")

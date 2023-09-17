@@ -62,7 +62,6 @@ class Extractor:
                 for product in list(content["Vendor Style"])[1:]:
                     if type(product) != str: product = str(product)
                     if type(product_) != str: product_ = str(product_)
-                    print(type(product), type(product_))
                     if product in product_ and product != "":
                         for i, key in enumerate(temp_inventory):
                             # print(type(self.OMS_InventoryList[self.OMS_InventoryList["ProductCode"] == sku].iloc[0].values[i]))

@@ -13,17 +13,16 @@ class Integrate_All:
         self.uom = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_UOM.csv")
         self.paymentterms = pd.read_csv(Path(__file__).resolve().parent.parent / "config/OMS_DB/OMS_PaymentTerm.csv")
         self.OMS_Customer_Sales_Import = {
-            "CustomerCurrency*": "Currency",
-            "TaxRule*": "TaxRule",
-            "Account": "SaleAccount",
-            "PriceTier": "PriceTier",
-            "Discount": "Discount",
-            "SalesRepresentative*": "SalesRepresentative",
-            "StockLocation": "Location",
-            "CustomerContact": "ContactComment",
-            "CustomerPhone": "Phone",
-            "CustomerEmail": "Email",
-            "Terms": "PaymentTerm"
+            "TaxRule*": "TaxRule",#Tax Exempt
+            "Account": "SaleAccount",#4000
+            "PriceTier": "PriceTier",#Tier 1 - Retail Pricing
+            "Discount": "Discount",#0
+            "SalesRepresentative*": "SalesRepresentative",#Jodie Pederson
+            "StockLocation": "Location",#Houston Warehouse
+            "CustomerContact": "ContactComment",#
+            "CustomerPhone": "Phone",#
+            "CustomerEmail": "Email",#
+            "Terms": "PaymentTerm"#?    90 Days
         }
         self.customer_name = customer_name
 
@@ -31,32 +30,24 @@ class Integrate_All:
         customer_match = pd.read_csv(Path(__file__).resolve().parent.parent / "config/customer_fields.csv")
         
         values = list(customer_match[customer_name])
+        print(values)
         auto_dic = {}
 
         # Account
-        temp = []
-        for _ in range(self.length):
-            temp.append(values[2])
-        
-        auto_dic.update({"Account": temp})
+        auto_dic.update({"Account": self.fun_iter_all(values[1])})
 
         #TaxRule*
         temp = []
         for _ in range(self.length):
-            temp.append(values[1])
+            temp.append(values[0])
         
-        auto_dic.update({"TaxRule*": temp})
+        auto_dic.update({"TaxRule*": self.fun_iter_all(values[0])})
 
         #Discount
-        temp = []
-        temp.append("")
-        for _ in range(self.length - 1):
-            temp.append(values[4])
-        
-        auto_dic.update({"Discount": temp})
+        auto_dic.update({"Discount": self.fun_iter_line(values[3])})
 
         #rest [0, 3, 5, 6, 7, 8, 9]
-        rest = [0, 3, 5, 6, 7, 8, 9]
+        rest = [2, 4, 5, 6, 7, 8, 9]
         for i, field in enumerate(self.OMS_Customer_Sales_Import):
             if i in rest:
                 temp = []
@@ -71,6 +62,24 @@ class Integrate_All:
         temp = []
         
         for _ in range(self.length):
+            temp.append(input)
+        
+        return temp
+    
+    def fun_iter_top(self, input):
+        temp = [input]
+
+        for _ in range(self.length - 1):
+            temp.append("")
+
+        return temp
+    
+        
+    def fun_iter_line(self, input):
+        temp = []
+        temp.append("")
+
+        for _ in range(self.length - 1):
             temp.append(input)
         
         return temp
@@ -97,7 +106,6 @@ class Integrate_All:
         total = [""]
 
         for i in range(1, self.length):
-            # print("@@@@@")
             total.append(quantity[i] * price_amount[i])
 
         return {"Total*": total}
@@ -126,7 +134,6 @@ class Integrate_All(Integrate_All):
         price_amount = []
         
         for i in range(1, self.length):
-            # print(m_qty_ordered[i], m_unit_price[i])
             if m_qty_ordered[i] == '': m_qty_ordered[i] = '0'
             if m_unit_price[i] == '': m_unit_price[i] = '0'
             price_amount.append(float(m_qty_ordered[i]) * (float(m_unit_price[i])))
@@ -138,26 +145,13 @@ class Integrate_All(Integrate_All):
     def fun_invoicenumber(self, m_po_number):
         return m_po_number
     
-    def fun_iter_line(self, input):
-        temp = []
-        temp.append("")
-
-        for _ in range(self.length - 1):
-            temp.append(input)
-        
-        return temp
-    
     def Integrate_final(self, matching_res, currency):
         self.currency = currency
         SalesImport = []
-        # print(len(matching_res))
         for i in range(len(matching_res)):
             SalesImport.append({})
         
         for i, element in enumerate(matching_res):
-            print("!!!!!!!!!!!!!!!!!!!!!!!")
-            print(element)
-            print("!!!!!!!!!!!!!!!!!!!!!!!")
             #everything will be done here
 
             self.length = len(element[list(element.keys())[0]])
@@ -167,7 +161,8 @@ class Integrate_All(Integrate_All):
                 {
                     "ShippingNotes": self.fun_shippingnotes(element["Ship Dates"], element["Cancel Date"]),
                     "InvoiceDate*/ExpireDate": self.fun_invoicedata_expiredate(element["Ship Dates"]),
-                    "YourBaseCurrency*": self.fun_iter_all("USD"),
+                    "YourBaseCurrency*": self.fun_iter_top(element["Currency"][0]),
+                    "CustomerCurrency*": self.fun_iter_top(element["Currency"][0]),
                     
                 }
             )
@@ -194,10 +189,9 @@ class Integrate_All(Integrate_All):
             # Add InvoiceNumber*
             SalesImport[i].update(
                 {
-                    "InvoiceNumber*": element["Retailers PO"]
+                    "InvoiceNumber*": self.fun_iter_all(element["Retailers PO"][0])
                 }
             )
-            print(element["Retailers PO"])
             # Add customername inherited fields
             SalesImport[i].update(self.auto_fun(self.customer_name))
             
@@ -211,8 +205,6 @@ class Integrate_All(Integrate_All):
 
             def vendor_addition(input, num):
                 product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
-                # print(input["Qty Ordered"][num])
-                # print(self.additional_uom[input["Vendor Style"][num]][1])
                 quantity["Quantity*"].append(int(float(input["Qty Ordered"][num])) / int(float(self.additional_uom[element["Vendor Style"][k]][1])))
                 price["Price/Amount*"].append(float(self.fun_remove_space(input["Unit Price"][num])) * int(self.additional_uom[element["Vendor Style"][k]][1]))
 
@@ -220,12 +212,10 @@ class Integrate_All(Integrate_All):
                 # if element["Vendor Style"][k] in self.additional_uom.keys():
                 vendor_addition(element, k)
                 product["Product*"].append(self.additional_uom[element["Vendor Style"][k]][0])
-                print(type(element["Qty Ordered"][k]), "_______________")
                 quantity["Quantity*"].append(int(float(self.fun_remove_space(str(element["Qty Ordered"][k])))) / int(float(self.fun_remove_space(str(self.additional_uom[element["Vendor Style"][k]][1])))))
                 price["Price/Amount*"].append(float(self.fun_remove_space(element["Unit Price"][k])) * int(self.additional_uom[element["Vendor Style"][k]][1]))
                 
                 # else:
-                #     print("#########################################")
                     # self.new_sku.append(element["Vendor Style"][k])
                     #frontend input here
                     # lis_aduom = [i for i in range(9)]
