@@ -47,6 +47,7 @@ class PO_Match_BUCEE:
             "PO Number": "Order #",
             "Retailers PO": "Order #",
             "Currency": "PO_currency",
+<<<<<<< HEAD
             "Ship To Name": "Ship To Name",
             "Ship To Address 1": "Ship To Address 1",
             "Ship To City": "Ship To City",
@@ -54,6 +55,8 @@ class PO_Match_BUCEE:
             "Ship to Zip": "Ship to Zip",
             "Ship To Country": "Ship To Country",
             "Buying Party Name": "Buying Party Name",
+=======
+>>>>>>> f693dddb3043d68d20442bcd0e4eaf93979cadc0
         }
         
         self.initial_part = {
@@ -81,6 +84,7 @@ class PO_Match_BUCEE:
             "PO Number": "",
             "Retailers PO": "",
             "Currency": "",
+<<<<<<< HEAD
             "Ship To Name": "",
             "Ship To Address 1": "",
             "Ship To City": "",
@@ -88,6 +92,9 @@ class PO_Match_BUCEE:
             "Ship to Zip": "",
             "Ship To Country": "",
             "Buying Party Name": "",
+=======
+
+>>>>>>> f693dddb3043d68d20442bcd0e4eaf93979cadc0
         }
         
         f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
@@ -328,7 +335,10 @@ class PO_Match_PEPCO:
             "Buyers Catalog or Stock Keeping #": "Item No",
             "UPC/EAN": "barcode",
             "Currency": "PO_currency",
+<<<<<<< HEAD
             
+=======
+>>>>>>> f693dddb3043d68d20442bcd0e4eaf93979cadc0
 
         }
         self.initial_part = {
@@ -341,7 +351,11 @@ class PO_Match_PEPCO:
             "Buyers Catalog or Stock Keeping #": "",
             "UPC/EAN": "",
             "Currency": "",
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> f693dddb3043d68d20442bcd0e4eaf93979cadc0
         }
 
         f = open(Path(__file__).resolve().parent.parent / "config/field_names_SalesImport_original.json")
